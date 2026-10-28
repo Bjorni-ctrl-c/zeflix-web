@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Film;
+use App\Models\Genre;
+use App\Models\Subscription;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -15,7 +18,9 @@ class R2PosterUploadTest extends TestCase
 
     public function test_admin_uploads_poster_to_private_r2_and_saves_its_object_key(): void
     {
+        config()->set('filesystems.disks.r2-posters.bucket', 'zeflix-posters');
         Storage::fake('r2-posters');
+        Genre::create(['name' => 'Drama']);
         $admin = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($admin)->post(route('admin.films.store'), [
@@ -37,6 +42,34 @@ class R2PosterUploadTest extends TestCase
         $film = Film::where('title', 'Poster Privat')->firstOrFail();
         $this->assertStringStartsWith('posters/', $film->poster_url);
         Storage::disk('r2-posters')->assertExists($film->poster_url);
+    }
+
+    public function test_admin_uploads_poster_to_local_storage_when_r2_is_not_configured(): void
+    {
+        config()->set('filesystems.disks.r2-posters.bucket', null);
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)->post(route('admin.films.store'), [
+            'title' => 'Poster Lokal',
+            'synopsis' => 'Film uji poster lokal.',
+            'poster_file' => UploadedFile::fake()->image('poster.jpg')->size(256),
+            'poster_url' => '',
+            'genre' => '',
+            'duration_minutes' => 2,
+            'access' => 'free',
+            'status' => 'draft',
+            'video_provider' => 'youtube',
+            'video_ref' => '',
+            'rights_note' => '',
+        ]);
+
+        $response->assertRedirect(route('admin.films.index'));
+        $film = Film::where('title', 'Poster Lokal')->firstOrFail();
+        $this->assertStringStartsWith('local:posters/', $film->poster_url);
+        $posterPath = substr($film->poster_url, strlen('local:'));
+        Storage::disk('public')->assertExists($posterPath);
+        $this->assertSame(Storage::disk('public')->url($posterPath), $film->posterImageUrl());
     }
 
     public function test_admin_cannot_upload_an_svg_as_a_poster(): void
@@ -100,7 +133,11 @@ class R2PosterUploadTest extends TestCase
             'published_at' => now(),
         ]);
 
-        $response = $this->get(route('home'));
+        $user = User::factory()->create();
+        $transaction = Transaction::create(['user_id' => $user->id, 'order_id' => 'R2-POSTER-ACCESS', 'amount' => 1, 'status' => 'paid']);
+        Subscription::create(['user_id' => $user->id, 'transaction_id' => $transaction->id, 'starts_at' => now()]);
+
+        $response = $this->actingAs($user)->get(route('home'));
 
         $response->assertOk()
             ->assertSee('https://account-id.r2.cloudflarestorage.com/zeflix-posters/posters/cover.webp')

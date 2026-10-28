@@ -1,25 +1,31 @@
-# SVOD Film Pendek — Laravel 13 + MySQL + Vercel
+# Zeflix — Laravel 13 + MySQL
 
-Ini **lapisan file** (overlay) di atas proyek Laravel 13 baru.
+Zeflix adalah MVP streaming film dengan akses satu kali bayar Rp1, Laravel 13,
+MySQL, dan Midtrans Sandbox.
 
-## 1. Pasang
+## Jalankan lokal dengan Laragon
+
+1. Pastikan Laragon MySQL aktif dan buat database `zeflix` dengan collation `utf8mb4_unicode_ci`.
+2. Jalankan `composer install`, salin `.env.example` menjadi `.env`, lalu isi `ADMIN_PASSWORD` dengan password lokal minimal 12 karakter.
+3. Generate application key, migrate schema, dan buat akun admin:
 ```bash
-composer create-project laravel/laravel svod
-# salin isi folder ini ke dalam proyek svod/ (timpa file yang sama:
-# bootstrap/app.php, app/Models/User.php, routes/web.php)
-cd svod
-cp .env.example .env && php artisan key:generate
-```
-Isi `.env` dengan MySQL (lihat `.env.vercel.example`), lalu:
-```bash
-php artisan migrate --seed     # membuat tabel + akun admin dari ADMIN_EMAIL/ADMIN_PASSWORD
+php artisan key:generate
+php artisan migrate --seed
 php artisan serve
 ```
+4. Buka `http://127.0.0.1:8000`. Admin memakai email/password dari `ADMIN_EMAIL` dan `ADMIN_PASSWORD`; halaman CMS ada di `/admin`.
+5. Untuk memulai pembayaran, isi `MIDTRANS_SERVER_KEY` dengan Server Key Sandbox dari Midtrans. Tanpa key, pembayaran sengaja ditolak.
 
-## 2. MySQL gratis (Vercel tidak punya MySQL)
-Pakai MySQL eksternal: **TiDB Cloud Serverless** (gratis, kompatibel MySQL) atau **Aiven for MySQL** (paket gratis).
-Keduanya butuh SSL: set `MYSQL_ATTR_SSL_CA=/etc/ssl/certs/ca-certificates.crt`.
-Jalankan `php artisan migrate --seed` dari komputer lokal yang `.env`-nya menunjuk ke database itu.
+Katalog, detail film, dan pemutar dikunci sampai webhook Midtrans memverifikasi pembayaran.
+Akses Rp1 berlaku tanpa batas waktu dan tidak diperpanjang otomatis.
+
+## MySQL untuk hosting
+
+Gunakan layanan MySQL/MariaDB yang dikelola, misalnya TiDB Cloud atau Aiven, lalu isi
+`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`. Untuk koneksi
+TLS, isi `MYSQL_ATTR_SSL_CA` sesuai path sertifikat pada host. Jangan mengunggah `.env`
+atau memakai kredensial lokal Laragon di hosting.
+Jalankan `php artisan migrate --seed` dari lingkungan yang terhubung ke database tersebut.
 
 ## 3. Video gratis
 - **YouTube Unlisted** (default): isi ID video di admin. ID hanya dikirim ke pengguna yang berhak, tetapi
@@ -45,8 +51,10 @@ Laravel menggunakan disk `r2` dari `config/filesystems.php` untuk membuat URL be
 4. Di Admin Film, unggah poster JPG, PNG, atau WebP maksimal 4 MB. Aplikasi mengunggah langsung ke disk R2 privat, menyimpan key objek di `films.poster_url`, lalu menghasilkan signed URL 30 menit saat poster ditampilkan.
 5. Poster URL publik yang sudah tersimpan tetap didukung. Saat mengganti poster R2, objek lama tidak otomatis dihapus dari bucket.
 
-## 4. Midtrans
-Daftar, ambil Server Key (sandbox dulu). Di dashboard Midtrans set **Payment Notification URL** ke
+R2 tidak wajib untuk tugas kuliah. Jika `R2_POSTER_BUCKET` kosong, upload poster otomatis disimpan di server lokal. Jalankan `php artisan storage:link` agar poster lokal bisa ditampilkan melalui web. Poster lokal bersifat publik; jangan gunakan untuk konten yang harus privat.
+
+## Midtrans
+Ambil Server Key Sandbox dan atur `MIDTRANS_PRODUCTION=false`. Di dashboard Midtrans set **Payment Notification URL** ke
 `https://DOMAIN-ANDA/midtrans/webhook`. Produksi: `MIDTRANS_PRODUCTION=true` + key produksi.
 
 ## 5. Deploy ke Vercel

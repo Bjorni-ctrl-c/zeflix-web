@@ -14,9 +14,9 @@
     @if($page==='privasi')
     <p>Kami mengumpulkan nama, email, dan riwayat transaksi untuk mengelola akun dan langganan. Data kartu atau e-wallet diproses penyedia pembayaran dan tidak disimpan di server kami.</p>
     @elseif($page==='ketentuan')
-    <p>Langganan Rp{{ number_format(config('svod.price'), 0, ',', '.') }} per bulan untuk satu akun. Akses berlaku selama masa langganan aktif. Dilarang membagikan akun atau menyebarkan film tanpa izin.</p>
+    <p>Akses penuh dibuka dengan satu kali pembayaran Rp{{ number_format(config('svod.price'), 0, ',', '.') }}. Dilarang membagikan akun atau menyebarkan film tanpa izin.</p>
     @else
-    <p>Langganan tidak diperpanjang otomatis; Anda membayar ulang secara manual. Ketentuan refund: isi sesuai kebijakan Anda.</p>
+    <p>Pembayaran adalah satu kali dan tidak diperpanjang otomatis. Ketentuan refund: isi sesuai kebijakan Anda.</p>
     @endif
   </div>
 </article>

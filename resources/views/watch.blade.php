@@ -8,7 +8,11 @@
   <div class="watch-heading"><p class="eyebrow"><span class="eyebrow__line"></span> Sedang diputar</p><h1>{{ $film->title }}</h1></div>
   <div class="player">
     @if($film->video_provider === 'youtube')
-    <iframe src="https://www.youtube-nocookie.com/embed/{{ e($film->video_ref) }}?rel=0&modestbranding=1" allow="fullscreen; picture-in-picture" allowfullscreen title="{{ $film->title }}"></iframe>
+      @if($film->youtubeVideoId())
+      <iframe src="https://www.youtube-nocookie.com/embed/{{ $film->youtubeVideoId() }}?rel=0&modestbranding=1" allow="fullscreen; picture-in-picture" allowfullscreen title="{{ $film->title }}"></iframe>
+      @else
+      <p class="note err" role="alert">ID atau URL video YouTube tidak valid. Perbarui data video melalui panel admin.</p>
+      @endif
     @elseif(in_array($film->video_provider, ['mp4','r2']))
     <video controls controlsList="nodownload" playsinline preload="metadata" src="{{ $film->playbackUrl() }}"></video>
     @else

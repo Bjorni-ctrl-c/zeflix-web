@@ -7,9 +7,9 @@
 @include('admin.nav')
 <section class="surface-card admin-section">
   <div class="card-heading"><div><p class="eyebrow"><span class="eyebrow__line"></span> Akun</p><h2>Semua pengguna</h2></div></div>
-  <div class="table-scroll"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Langganan sampai</th></tr></thead><tbody>
+  <div class="table-scroll"><table class="data-table"><thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Status akses</th></tr></thead><tbody>
     @forelse($rows as $u)
-    <tr><td data-label="Nama"><strong>{{ $u->name }}</strong></td><td data-label="Email">{{ $u->email }}</td><td data-label="Peran"><span class="status-pill">{{ $u->role }}</span></td><td data-label="Langganan sampai">{{ $u->activeUntil()?->format('d/m/Y H:i') ?? '-' }}</td></tr>
+    <tr><td data-label="Nama"><strong>{{ $u->name }}</strong></td><td data-label="Email">{{ $u->email }}</td><td data-label="Peran"><span class="status-pill">{{ $u->role }}</span></td><td data-label="Status akses">{{ $u->hasActiveSubscription() ? ($u->activeUntil()?->format('d/m/Y H:i') ?? 'Selamanya') : '-' }}</td></tr>
     @empty
     <tr><td class="table-empty" colspan="4">Belum ada pengguna.</td></tr>
     @endforelse

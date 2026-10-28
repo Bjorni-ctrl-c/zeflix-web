@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: ['midtrans/webhook']);
-        $middleware->alias(['admin' => \App\Http\Middleware\AdminOnly::class]);
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\AdminOnly::class,
+            'subscriber' => \App\Http\Middleware\EnsureActiveAccess::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {})
     ->create();

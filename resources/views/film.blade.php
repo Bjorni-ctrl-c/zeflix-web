@@ -23,14 +23,14 @@ $posterUrl = $film->posterImageUrl();
         <a class="btn btn--primary" href="{{ route('watch', $film) }}"><span aria-hidden="true">▶</span> Tonton sekarang</a>
         @elseif(auth()->check())
         <form method="post" action="{{ route('checkout.start') }}">@csrf
-          <button class="btn btn--primary">Berlangganan Rp{{ number_format(config('svod.price'), 0, ',', '.') }} / bulan</button>
+          <a class="btn btn--primary" href="{{ route('checkout.page') }}">Buka akses Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</a>
         </form>
         @else
         <a class="btn btn--primary" href="{{ route('login') }}">Masuk untuk menonton</a>
         <a class="btn btn--outline" href="{{ route('register') }}">Buat akun</a>
         @endif
       </div>
-      @if(!$can)<p class="film-hero__notice">Film ini untuk pelanggan aktif. Tanpa perpanjangan otomatis.</p>@endif
+      @if(!$can)<p class="film-hero__notice">Bayar satu kali untuk membuka akses penuh ke seluruh katalog.</p>@endif
     </div>
   </div>
 </section>

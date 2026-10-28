@@ -8,7 +8,7 @@
   <div class="status-mark status-mark--success" aria-hidden="true">✓</div>
   <p class="eyebrow"><span class="eyebrow__line"></span> Pembayaran terkonfirmasi</p>
   <h1>Pembayaran berhasil.</h1>
-  <p>Langganan Anda aktif. Pilih film dan nikmati tontonan berikutnya.</p>
+  <p>Akses penuh Zeflix aktif tanpa batas waktu. Pilih film dan mulai menonton.</p>
   <a class="btn btn--primary" href="{{ route('catalog') }}">Mulai menonton <span aria-hidden="true">→</span></a>
   @elseif($t->status==='pending')
   <div class="status-mark status-mark--pending" aria-hidden="true">···</div>

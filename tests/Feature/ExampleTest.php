@@ -17,8 +17,10 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk()
-            ->assertSee('Cerita pilihan, dalam genggaman')
-            ->assertSee('Jelajahi katalog')
-            ->assertSee('Segera hadir di Zeflix');
+            ->assertSee('Cerita pilihan.')
+            ->assertSee('Mulai dalam tiga langkah')
+            ->assertSee('Buka akses sekali')
+            ->assertSee('Katalog yang mudah dijelajahi')
+            ->assertSee('Tidak ada tagihan bulanan');
     }
 }
