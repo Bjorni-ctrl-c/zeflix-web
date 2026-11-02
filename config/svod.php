@@ -1,4 +1,5 @@
 <?php
+
 return [
     'price' => (int) env('SVOD_PRICE', 1),
     'midtrans' => [

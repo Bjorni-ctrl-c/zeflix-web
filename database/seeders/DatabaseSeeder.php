@@ -22,8 +22,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Admin Zeflix', 'role' => 'admin', 'password' => $password]
         );
 
-        foreach (['Drama', 'Komedi', 'Aksi', 'Dokumenter', 'Romansa'] as $name) {
+        foreach (['Drama', 'Komedi', 'Aksi', 'Dokumenter', 'Romansa', 'Sci-Fi', 'Horor', 'Animasi'] as $name) {
             Genre::firstOrCreate(['name' => $name]);
         }
+
+        $this->call(DemoFilmsSeeder::class);
     }
 }

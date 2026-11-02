@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -10,11 +12,36 @@ class Film extends Model
 {
     protected $guarded = [];
 
-    protected $casts = ['published_at' => 'datetime'];
+    protected $casts = [
+        'published_at' => 'datetime',
+        'is_featured' => 'boolean',
+        'match_rate' => 'integer',
+        'views_count' => 'integer',
+    ];
 
     public function scopePublished($q)
     {
         return $q->where('status', 'published');
+    }
+
+    public function scopeFeatured($q)
+    {
+        return $q->where('is_featured', true);
+    }
+
+    public function watchlists(): HasMany
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    public function watchlistUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'watchlists')->withTimestamps();
+    }
+
+    public function watchProgresses(): HasMany
+    {
+        return $this->hasMany(WatchProgress::class);
     }
 
     public function canBeWatchedBy(?User $user): bool

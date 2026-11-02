@@ -1,4 +1,7 @@
 <?php
+
+use App\Http\Middleware\AdminOnly;
+use App\Http\Middleware\EnsureActiveAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,8 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: ['midtrans/webhook']);
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminOnly::class,
-            'subscriber' => \App\Http\Middleware\EnsureActiveAccess::class,
+            'admin' => AdminOnly::class,
+            'subscriber' => EnsureActiveAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {})
