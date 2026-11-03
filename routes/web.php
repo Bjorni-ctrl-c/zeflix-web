@@ -12,9 +12,12 @@ Route::get('/kebijakan/{page}', fn ($page) => view('legal', ['page' => $page]))
     ->whereIn('page', ['privasi', 'ketentuan', 'refund'])->name('legal');
 
 Route::middleware(['auth', 'subscriber'])->group(function () {
-    Route::get('/katalog', [PublicController::class, 'catalog'])->name('catalog');
     Route::get('/daftar-saya', [PublicController::class, 'watchlist'])->name('watchlist');
     Route::post('/daftar-saya/toggle/{film:slug}', [PublicController::class, 'toggleWatchlist'])->name('watchlist.toggle');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/katalog', [PublicController::class, 'catalog'])->name('catalog');
     Route::get('/film/{film:slug}', [PublicController::class, 'show'])->name('film');
     Route::get('/film/{film:slug}/quick', [PublicController::class, 'quickView'])->name('film.quick');
     Route::get('/tonton/{film:slug}', [PublicController::class, 'watch'])->name('watch');

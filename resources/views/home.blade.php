@@ -3,8 +3,7 @@
 @section('title', 'Zeflix — Nonton Film Pendek Terbaik')
 
 @section('hero')
-@if($featured && $canBrowseCatalog)
-@php
+@if($featured && $canBrowseCatalog)@php
 $heroPoster = $featured->posterImageUrl();
 $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
 @endphp
@@ -35,9 +34,15 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
       <p class="netflix-billboard__synopsis">{{ $featured->synopsis }}</p>
 
       <div class="netflix-billboard__actions">
+        @if($featured->canBeWatchedBy(auth()->user()))
         <a class="btn btn--netflix-play" href="{{ route('watch', $featured) }}">
           <span aria-hidden="true">▶</span> Putar
         </a>
+        @else
+        <a class="btn btn--netflix-play" href="{{ route('checkout.page') }}">
+          <span aria-hidden="true">🔒</span> Berlangganan untuk Menonton
+        </a>
+        @endif
 
         <button type="button" class="btn btn--netflix-secondary js-quick-view" data-slug="{{ $featured->slug }}">
           <span aria-hidden="true">ℹ</span> Info Selengkapnya
@@ -61,8 +66,8 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
     <div class="hero__copy">
       <p class="eyebrow"><span class="eyebrow__line"></span> Bioskop cerita pilihanmu</p>
       <span class="hero__kicker">Film pendek <span aria-hidden="true">·</span> Cerita besar</span>
-      <h1>Cerita pilihan.<br>Sekali bayar.</h1>
-      <p class="hero__description">Temukan film pilihan dan nikmati akses katalog dengan satu kali pembayaran <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong>. Tidak ada tagihan bulanan.</p>
+      <h1>Cerita pilihan.<br>Sebagian gratis.</h1>
+      <p class="hero__description">Tonton film gratis atau buka akses ke seluruh katalog dengan satu kali pembayaran <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong>. Tidak ada tagihan bulanan.</p>
       <div class="hero__actions">
         @guest
         <a class="btn btn--primary" href="{{ route('register') }}">Buat akun &amp; mulai</a>
@@ -178,7 +183,29 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
   </section>
   @endif
 
-  {{-- 5. Per Kategori Genre --}}
+  {{-- 5. Film Gratis — always visible for non-subscribers --}}
+  @if(!($isSubscriber ?? false) && ($freeFilms ?? collect())->isNotEmpty())
+  <section class="rowbox">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__line"></span> Tonton Tanpa Berlangganan</p>
+        <h2>Film Gratis</h2>
+      </div>
+      <a class="text-link" href="{{ route('catalog') }}">Lihat katalog <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="netflix-row-wrap">
+      <button class="slider-btn slider-btn--left js-slide-left" aria-label="Geser ke kiri" type="button">‹</button>
+      <div class="row js-slider-row">
+        @foreach($freeFilms as $f)
+          @include('partials.card', ['f' => $f])
+        @endforeach
+      </div>
+      <button class="slider-btn slider-btn--right js-slide-right" aria-label="Geser ke kanan" type="button">›</button>
+    </div>
+  </section>
+  @endif
+
+  {{-- 6. Per Kategori Genre --}}
   @foreach($genresWithFilms as $genreName => $genreFilms)
   <section class="rowbox">
     <div class="section-heading">
@@ -218,8 +245,8 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
       </li>
       <li class="landing-step">
         <span class="landing-step__number">02</span>
-        <h3>Buka akses sekali</h3>
-        <p>Selesaikan pembayaran satu kali sebesar <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong>. Tidak ada tagihan bulanan.</p>
+        <h3>Nonton atau buka akses penuh</h3>
+        <p>Tonton film gratis langsung, atau selesaikan pembayaran satu kali <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong> untuk akses seluruh katalog premium.</p>
       </li>
       <li class="landing-step">
         <span class="landing-step__number">03</span>

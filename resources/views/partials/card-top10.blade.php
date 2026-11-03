@@ -4,6 +4,7 @@ $isInWatchlist = in_array($f->id, $watchlistIds ?? []);
 $matchRate = $f->match_rate ?? 95;
 $ageRating = $f->age_rating ?? '13+';
 $quality = $f->quality ?? 'HD';
+$canWatch = $f->canBeWatchedBy(auth()->user());
 @endphp
 <div class="top10-item" data-film-slug="{{ $f->slug }}">
   <div class="top10-rank" aria-hidden="true">{{ $rank }}</div>
@@ -20,11 +21,23 @@ $quality = $f->quality ?? 'HD';
         {{ $f->access === 'free' ? 'Gratis' : 'Premium' }}
       </span>
 
+      @if(!$canWatch)
+      <div class="film-card__lock" title="Berlangganan untuk menonton">
+        <span aria-hidden="true">🔒</span>
+      </div>
+      @endif
+
       <div class="film-card__overlay">
         <div class="film-card__actions">
+          @if($canWatch)
           <a class="film-card__btn film-card__btn--play" href="{{ route('watch', $f) }}" title="Putar Film" aria-label="Putar {{ $f->title }}">
             <span aria-hidden="true">▶</span>
           </a>
+          @else
+          <a class="film-card__btn film-card__btn--play" href="{{ route('checkout.page') }}" title="Berlangganan" aria-label="Berlangganan untuk menonton {{ $f->title }}">
+            <span aria-hidden="true">🔒</span>
+          </a>
+          @endif
 
           @auth
           <button type="button" class="film-card__btn film-card__btn--list js-watchlist-toggle {{ $isInWatchlist ? 'is-active' : '' }}"

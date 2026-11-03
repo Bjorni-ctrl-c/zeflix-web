@@ -16,7 +16,7 @@
       <input type="hidden" name="genre" value="{{ request('genre') }}">
     @endif
     <div class="search-input-wrap">
-      <span class="search-icon" aria-hidden="true">🔍</span>
+      <span class="search-icon" aria-hidden="true"></span>
       <input type="text" name="q" value="{{ $searchQuery }}" placeholder="Cari film..." autocomplete="off">
       @if($searchQuery)
       <a href="{{ route('catalog', request()->except('q')) }}" class="search-clear-btn" title="Hapus pencarian">✕</a>

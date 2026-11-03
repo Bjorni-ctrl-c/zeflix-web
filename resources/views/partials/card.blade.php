@@ -4,6 +4,7 @@ $isInWatchlist = in_array($f->id, $watchlistIds ?? []);
 $matchRate = $f->match_rate ?? 95;
 $ageRating = $f->age_rating ?? '13+';
 $quality = $f->quality ?? 'HD';
+$canWatch = $f->canBeWatchedBy(auth()->user());
 $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchProgresses->firstWhere('user_id', auth()->id())->progress_percent ?? null);
 @endphp
 <div class="film-card" data-film-slug="{{ $f->slug }}" data-film-id="{{ $f->id }}">
@@ -19,12 +20,24 @@ $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchPr
       {{ $f->access === 'free' ? 'Gratis' : 'Premium' }}
     </span>
 
+    @if(!$canWatch)
+    <div class="film-card__lock" title="Berlangganan untuk menonton">
+      <span aria-hidden="true">🔒</span>
+    </div>
+    @endif
+
     {{-- Netflix Card Hover Quick Actions --}}
     <div class="film-card__overlay">
       <div class="film-card__actions">
+        @if($canWatch)
         <a class="film-card__btn film-card__btn--play" href="{{ route('watch', $f) }}" title="Putar Film" aria-label="Putar {{ $f->title }}">
           <span aria-hidden="true">▶</span>
         </a>
+        @else
+        <a class="film-card__btn film-card__btn--play" href="{{ route('checkout.page') }}" title="Berlangganan" aria-label="Berlangganan untuk menonton {{ $f->title }}">
+          <span aria-hidden="true">🔒</span>
+        </a>
+        @endif
 
         @auth
         <button type="button" class="film-card__btn film-card__btn--list js-watchlist-toggle {{ $isInWatchlist ? 'is-active' : '' }}"

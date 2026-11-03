@@ -894,6 +894,23 @@
       box-shadow: 0 0 8px var(--netflix-red);
     }
 
+    /* Premium lock overlay for non-subscribers */
+    .film-card__lock {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 50%;
+      font-size: .9rem;
+      z-index: 5;
+      pointer-events: none;
+    }
+
     .film-card__info { padding: .6rem .2rem .2rem }
     .film-card__title {
       display: block;
@@ -1788,7 +1805,7 @@
     <div class="bar-right">
       {{-- Real-time Search Box in Navbar --}}
       <form method="get" action="{{ route('catalog') }}" class="nav-search" id="nav-search-form">
-        <span class="nav-search__icon" aria-hidden="true">🔍</span>
+        <span class="nav-search__icon" aria-hidden="true"></span>
         <input type="text"
                name="q"
                class="nav-search__input"

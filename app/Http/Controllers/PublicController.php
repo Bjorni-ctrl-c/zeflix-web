@@ -13,7 +13,7 @@ class PublicController extends Controller
     public function home(Request $r)
     {
         $user = $r->user();
-        $canBrowseCatalog = $user && ($user->isAdmin() || $user->hasActiveSubscription());
+        $isSubscriber = $user && ($user->isAdmin() || $user->hasActiveSubscription());
 
         $featured = null;
         $continueWatching = collect();
@@ -21,8 +21,10 @@ class PublicController extends Controller
         $top10 = collect();
         $trending = collect();
         $genresWithFilms = collect();
+        $freeFilms = collect();
 
-        if ($canBrowseCatalog) {
+        if ($user) {
+            // All logged-in users can see free films; subscribers see everything
             $allPublished = Film::published()->get();
 
             $featured = Film::published()->where('is_featured', true)->first()
@@ -36,7 +38,10 @@ class PublicController extends Controller
 
             $trending = Film::published()->latest('published_at')->take(10)->get();
 
-            if ($user) {
+            // Free films row — always visible to logged-in users
+            $freeFilms = $allPublished->where('access', 'free')->take(10);
+
+            if ($isSubscriber) {
                 // Continue Watching
                 $continueWatching = WatchProgress::where('user_id', $user->id)
                     ->where('progress_percent', '<', 95)
@@ -53,7 +58,9 @@ class PublicController extends Controller
             // Group films by genre for Netflix rows
             $genres = Genre::orderBy('name')->pluck('name');
             foreach ($genres as $genreName) {
-                $genreFilms = $allPublished->where('genre', $genreName)->take(8);
+                $genreFilms = $isSubscriber
+                    ? $allPublished->where('genre', $genreName)->take(8)
+                    : $allPublished->where('genre', $genreName)->where('access', 'free')->take(8);
                 if ($genreFilms->isNotEmpty()) {
                     $genresWithFilms->put($genreName, $genreFilms);
                 }
@@ -63,12 +70,14 @@ class PublicController extends Controller
         $watchlistIds = $user ? $user->watchlistFilms()->pluck('films.id')->all() : [];
 
         return view('home', [
-            'canBrowseCatalog' => $canBrowseCatalog,
+            'canBrowseCatalog' => (bool) $user,
+            'isSubscriber' => $isSubscriber ?? false,
             'featured' => $featured,
             'top10' => $top10,
             'continueWatching' => $continueWatching,
             'watchlistFilms' => $watchlistFilms,
             'trending' => $trending,
+            'freeFilms' => $freeFilms,
             'genresWithFilms' => $genresWithFilms,
             'watchlistIds' => $watchlistIds,
         ]);
