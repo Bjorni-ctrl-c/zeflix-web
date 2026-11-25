@@ -141,7 +141,8 @@ class DemoFilmsSeeder extends Seeder
 
         foreach ($films as $item) {
             $slug = Str::slug($item['title']);
-            Film::updateOrCreate(
+            // firstOrCreate: jika film sudah ada, TIDAK menimpa data yang sudah diedit admin
+            Film::firstOrCreate(
                 ['slug' => $slug],
                 array_merge($item, [
                     'status' => 'published',
