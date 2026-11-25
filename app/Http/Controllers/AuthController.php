@@ -100,6 +100,10 @@ class AuthController extends Controller
 
         $r->user()->update($data);
 
+        if ($r->user()->isAdmin()) {
+            AuditLog::record('ADMIN_PROFILE_UPDATE', "Administrator '{$r->user()->name}' memperbarui data profil/password");
+        }
+
         return back()->with('ok', 'Profil berhasil diperbarui.');
     }
 

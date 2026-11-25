@@ -58,29 +58,46 @@
       @csrf
       @method('PUT')
       <div class="form-grid">
-        <label>
-          Nama Lengkap
-          <input name="name" value="{{ old('name', auth()->user()->name) }}" autocomplete="name" minlength="3" maxlength="50" required>
-          <span class="field-hint" style="color:#888; font-size:.72rem;">Maksimal 50 karakter (hanya huruf dan spasi)</span>
+        <label for="acc-name">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Nama Lengkap <span class="required-mark">*</span></span>
+            <span id="acc-name-counter" style="font-size: .72rem; color: #888;">{{ strlen(old('name', auth()->user()->name)) }} / 50</span>
+          </div>
+          <input id="acc-name" name="name" value="{{ old('name', auth()->user()->name) }}" autocomplete="name" minlength="3" maxlength="50" required placeholder="contoh: Budi Pratama">
+          <span class="field-hint">Maksimal 50 karakter (hanya huruf dan spasi)</span>
+          @error('name')
+            <span class="field-error" style="color: var(--netflix-red); font-size: .8rem; font-weight: 600;">{{ $message }}</span>
+          @enderror
         </label>
-        <label>
-          Email
-          <input type="email" value="{{ auth()->user()->email }}" disabled style="opacity: 0.6; cursor: not-allowed;">
+        <label for="acc-email">
+          <span>Alamat Email</span>
+          <input id="acc-email" type="email" value="{{ auth()->user()->email }}" disabled style="opacity: 0.6; cursor: not-allowed;">
+          <span class="field-hint">Email akun terikat dan tidak dapat diubah</span>
         </label>
-        <label>
-          Password Baru
-          <span class="field-hint" style="color:#888; font-size:.72rem;">Kosongkan jika tidak ingin mengganti.</span>
+        <label for="acc-password">
+          <span>Password Baru</span>
           <div class="password-wrap">
-            <input type="password" name="password" autocomplete="new-password">
+            <input id="acc-password" type="password" name="password" autocomplete="new-password" placeholder="Kosongkan jika tidak diubah" minlength="8">
             <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
           </div>
+          <span class="field-hint">Kosongkan jika tidak ingin mengganti password (min. 8 karakter)</span>
+          @error('password')
+            <span class="field-error" style="color: var(--netflix-red); font-size: .8rem; font-weight: 600;">{{ $message }}</span>
+          @enderror
         </label>
-        <label>
-          Ulangi Password Baru
+        <label for="acc-password-confirm">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Ulangi Password Baru</span>
+            <span id="acc-pw-match" style="font-size: .72rem; color: #888;"></span>
+          </div>
           <div class="password-wrap">
-            <input type="password" name="password_confirmation" autocomplete="new-password">
+            <input id="acc-password-confirm" type="password" name="password_confirmation" autocomplete="new-password" placeholder="Ketik ulang password baru">
             <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
           </div>
+          <span class="field-hint">Pastikan sama persis dengan password baru di atas</span>
+          @error('password_confirmation')
+            <span class="field-error" style="color: var(--netflix-red); font-size: .8rem; font-weight: 600;">{{ $message }}</span>
+          @enderror
         </label>
       </div>
       <div style="margin-top: 1rem;">
@@ -126,4 +143,38 @@
     </div>
   </section>
 </div>
+
+<script>
+  (function() {
+    const nameInp = document.getElementById('acc-name');
+    const nameCount = document.getElementById('acc-name-counter');
+    if (nameInp && nameCount) {
+      nameInp.addEventListener('input', function() {
+        nameCount.textContent = this.value.length + ' / 50';
+      });
+    }
+
+    const pwInp = document.getElementById('acc-password');
+    const pwConf = document.getElementById('acc-password-confirm');
+    const pwMatch = document.getElementById('acc-pw-match');
+    function checkPwMatch() {
+      if (!pwInp || !pwConf || !pwMatch) return;
+      if (pwConf.value.length === 0) {
+        pwMatch.textContent = '';
+        return;
+      }
+      if (pwInp.value === pwConf.value) {
+        pwMatch.textContent = 'Password cocok';
+        pwMatch.style.color = 'var(--netflix-green)';
+      } else {
+        pwMatch.textContent = 'Belum cocok';
+        pwMatch.style.color = 'var(--netflix-red)';
+      }
+    }
+    if (pwInp && pwConf) {
+      pwInp.addEventListener('input', checkPwMatch);
+      pwConf.addEventListener('input', checkPwMatch);
+    }
+  })();
+</script>
 @endsection

@@ -1,70 +1,139 @@
-# Zeflix — Laravel 13 + MySQL
+# Zeflix — Platform Streaming Film Pendek (SVOD)
 
-Zeflix adalah MVP streaming film dengan akses satu kali bayar Rp1, Laravel 13,
-MySQL, dan Midtrans Sandbox.
+Zeflix adalah aplikasi web streaming film pendek (*Subscription Video On Demand*) dengan model akses sekali bayar seumur hidup, dibangun menggunakan **Laravel 13**, antarmuka tema gelap ala **Netflix**, gateway pembayaran **Midtrans**, dan siap dideploy serverless ke **Vercel** dengan cloud database **Aiven**.
 
-## Jalankan lokal dengan Laragon
+---
 
-1. Pastikan Laragon MySQL aktif dan buat database `zeflix` dengan collation `utf8mb4_unicode_ci`.
-2. Jalankan `composer install`, salin `.env.example` menjadi `.env`, lalu isi `ADMIN_PASSWORD` dengan password lokal minimal 12 karakter.
-3. Generate application key, migrate schema, dan buat akun admin:
-```bash
-php artisan key:generate
-php artisan migrate --seed
-php artisan serve
+## 🚀 Fitur Utama
+
+- **Katalog & Streaming Film**:
+  - Filter genre, pencarian judul, dan pengurutan (Terbaru & Populer).
+  - Quick-view popup modal saat mengklik poster di katalog.
+  - Dukungan video fleksibel: YouTube Unlisted, direct MP4/HLS, dan Cloudflare R2 private signed URL.
+  - Pemutar video dengan pencatatan durasi tontonan (*Watch Progress*) otomatis.
+- **Daftar Saya (Watchlist)**:
+  - Bookmark film favorit dengan 1-klik AJAX tanpa reload halaman.
+- **Pembayaran Sekali Bayar (Midtrans)**:
+  - Integrasi Midtrans Snap Popup resmi (QRIS, GoPay, ShopeePay, Virtual Account BCA/Mandiri/BNI/BRI).
+  - Akses seluruh katalog premium terbuka otomatis setelah status pembayaran berhasil.
+- **Panel Administrator**:
+  - Ringkasan statistik (total film, pengguna, pelanggan aktif, pendapatan kotor).
+  - Manajemen katalog film (Create, Read, Update, Delete).
+  - Manajemen kategori genre dengan update berantai ke film terkait.
+  - Pemantauan riwayat transaksi dan data pengguna.
+  - **Log Audit Administrator**: Rekam jejak seluruh aktivitas krusial, perubahan data, dan histori login/logout admin.
+- **Keamanan & Validasi**:
+  - Validasi ketat form pendaftaran dan login (email wajib berdomain lengkap, pembatasan nama 3–50 karakter hanya huruf, password minimal 8 karakter).
+  - Regenerasi session ID saat login/register untuk mencegah *session fixation*.
+  - Proteksi CSRF (`@csrf`) pada seluruh form.
+  - Proteksi rute admin (`/admin`) dengan pengalihan intended URL dan penanganan error 403/404/500 kustom bertema Zeflix.
+
+---
+
+## 💻 Panduan Instalasi Lokal (Laragon / PHP 8.3+)
+
+### 1. Prasyarat
+- PHP >= 8.3 (dengan ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `curl`)
+- Composer >= 2.x
+- MySQL / MariaDB (misal via Laragon)
+
+### 2. Langkah Setup
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/Bjorni-ctrl-c/zeflix-web.git
+   cd zeflix-web
+   ```
+
+2. **Instal dependensi Composer**:
+   ```bash
+   composer install
+   ```
+
+3. **Buat file `.env`**:
+   Salin `.env.example` menjadi `.env` (**catatan: file `.env` bersifat privat dan jangan pernah di-commit ke Git**):
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Konfigurasi Database & Kunci Aplikasi**:
+   Sesuaikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di `.env`, lalu generate app key:
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Jalankan Migrasi & Seeder Awal**:
+   ```bash
+   php artisan migrate --seed
+   ```
+   *Perintah ini membuat tabel database, akun admin awal (`admin@zeflix.test`), genre default, dan demo film.*
+
+6. **Jalankan Server Lokal**:
+   ```bash
+   php artisan serve
+   ```
+   Akses di browser: `http://127.0.0.1:8000`.
+
+---
+
+## ☁️ Panduan Deploy Gratis (Vercel + Aiven)
+
+Aplikasi ini sudah dikonfigurasi sepenuhnya untuk hosting serverless di **Vercel** dengan database cloud gratis di **Aiven**.
+
+### 1. Buat Database MySQL di Aiven (aiven.io)
+1. Buat akun gratis di [aiven.io](https://aiven.io).
+2. Buat service baru **MySQL** (pilih cloud provider terdekat, misal: Singapore).
+3. Catat data koneksi: **Host**, **Port**, **User** (`avnadmin`), **Password**, dan **Database** (`defaultdb`).
+
+### 2. Deploy di Vercel (vercel.com)
+1. Hubungkan repository GitHub ke [vercel.com](https://vercel.com).
+2. Pada **Settings > Build & Development Settings**:
+   - **Framework Preset**: Pilih **Other**.
+   - **Output Directory**: Aktifkan toggle Override, isi dengan **`public`**.
+3. Pada **Settings > Environment Variables**, tambahkan variabel berikut (lihat panduan lengkap di `.env.vercel.example`):
+   - `APP_NAME`: `Zeflix`
+   - `APP_KEY`: *(Key dari file `.env` lokal Anda)*
+   - `APP_URL`: `https://zeflix-web.vercel.app`
+   - `DB_CONNECTION`: `mysql`
+   - `DB_HOST`: *(Host database Aiven)*
+   - `DB_PORT`: *(Port database Aiven)*
+   - `DB_DATABASE`: `defaultdb`
+   - `DB_USERNAME`: `avnadmin`
+   - `DB_PASSWORD`: *(Password database Aiven)*
+   - `MYSQL_ATTR_SSL_VERIFY_SERVER_CERT`: `false`
+   - `DEPLOY_SECRET`: `token-rahasia-migrasi-bebas`
+   - `ADMIN_EMAIL`: `admin@zeflix.com`
+   - `ADMIN_PASSWORD`: `AdminZeflix123!`
+   - `MIDTRANS_SERVER_KEY`: *(Server Key Sandbox Midtrans Anda)*
+   - `MIDTRANS_CLIENT_KEY`: *(Client Key Sandbox Midtrans Anda)*
+   - `MIDTRANS_SIGNATURE_KEY`: *(Signature Key Midtrans Anda)*
+   - `MIDTRANS_PRODUCTION`: `false`
+   - `SVOD_PRICE`: `1`
+4. Klik **Deploy**.
+
+### 3. Eksekusi Migrasi Database Cloud (Sekali Klik)
+Setelah deployment selesai berstatus *Ready*, buka URL ini di browser untuk mengisi database Aiven:
+```text
+https://zeflix-web.vercel.app/up/migrate?secret=token-rahasia-migrasi-bebas&seed=true
 ```
-4. Buka `http://127.0.0.1:8000`. Admin memakai email/password dari `ADMIN_EMAIL` dan `ADMIN_PASSWORD`; halaman CMS ada di `/admin`.
-5. Untuk memulai pembayaran, isi `MIDTRANS_SERVER_KEY` dengan Server Key Sandbox dari Midtrans. Tanpa key, pembayaran sengaja ditolak.
+Setelah muncul pesan **BERHASIL**, web sudah aktif penuh di **[https://zeflix-web.vercel.app](https://zeflix-web.vercel.app)**.
 
-Katalog, detail film, dan pemutar dikunci sampai webhook Midtrans memverifikasi pembayaran.
-Akses Rp1 berlaku tanpa batas waktu dan tidak diperpanjang otomatis.
+---
 
-## MySQL untuk hosting
+## 🧪 Pengujian Otomatis
 
-Gunakan layanan MySQL/MariaDB yang dikelola, misalnya TiDB Cloud atau Aiven, lalu isi
-`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`. Untuk koneksi
-TLS, isi `MYSQL_ATTR_SSL_CA` sesuai path sertifikat pada host. Jangan mengunggah `.env`
-atau memakai kredensial lokal Laragon di hosting.
-Jalankan `php artisan migrate --seed` dari lingkungan yang terhubung ke database tersebut.
+Aplikasi dilengkapi dengan rangkaian automated test (PHPUnit) yang mencakup seluruh alur autentikasi, akses katalog, transaksi Midtrans, dan hak akses admin:
 
-## 3. Video gratis
-- **YouTube Unlisted** (default): isi ID video di admin. ID hanya dikirim ke pengguna yang berhak, tetapi
-  siapa pun yang tahu ID-nya bisa menontonnya langsung di YouTube. Ini proteksi lemah.
-- **MP4/HLS lewat URL** bisa dibagikan jika origin tidak membatasi akses. Untuk Cloudflare R2 privat,
-  pilih provider R2 agar aplikasi membuat signed URL. Vercel tidak cocok untuk menyimpan file video.
-Cek ketentuan YouTube dan penyedia lain sebelum memakainya untuk konten berbayar.
-
-## 3b. Video di Cloudflare R2 (disarankan)
-1. Cloudflare Dashboard > R2 > buat bucket **privat** (jangan aktifkan akses publik).
-2. R2 > Manage API Tokens > buat token dengan akses Object Read untuk bucket video.
-3. Isi `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_ENDPOINT`, dan `R2_REGION=auto` di `.env` lokal serta Environment Variables di Vercel.
-4. Kompres video: `ffmpeg -i asli.mov -c:v libx264 -crf 24 -preset slow -vf scale=-2:720 -c:a aac -b:a 128k -movflags +faststart film.mp4`
-5. Upload video lewat dashboard R2 atau `rclone`/AWS CLI. File video tetap berada di R2; aplikasi hanya menyimpan key objeknya di kolom `films.video_ref`.
-6. Di admin pilih sumber **Cloudflare R2**, lalu isi key objek (mis. `films/film-1.mp4`).
-
-Laravel menggunakan disk `r2` dari `config/filesystems.php` untuk membuat URL bertanda tangan yang berlaku 3 jam. Tidak perlu migrasi database baru karena tabel `films` sudah memiliki kolom `video_provider` dan `video_ref`. Paket Flysystem S3 sudah menjadi dependency Composer aplikasi.
-
-## 3c. Poster privat di Cloudflare R2
-1. Buat atau gunakan bucket poster privat yang berbeda dari bucket video.
-2. Buat API token R2 khusus bucket poster dengan izin **Object Read & Write**. Token video yang hanya memiliki izin baca tetap digunakan terpisah.
-3. Isi `R2_POSTER_ACCESS_KEY_ID`, `R2_POSTER_SECRET_ACCESS_KEY`, dan `R2_POSTER_BUCKET` di `.env` lokal serta Environment Variables di Vercel. `R2_ENDPOINT` dan `R2_REGION` sama seperti konfigurasi R2 video.
-4. Di Admin Film, unggah poster JPG, PNG, atau WebP maksimal 4 MB. Aplikasi mengunggah langsung ke disk R2 privat, menyimpan key objek di `films.poster_url`, lalu menghasilkan signed URL 30 menit saat poster ditampilkan.
-5. Poster URL publik yang sudah tersimpan tetap didukung. Saat mengganti poster R2, objek lama tidak otomatis dihapus dari bucket.
-
-R2 tidak wajib untuk tugas kuliah. Jika `R2_POSTER_BUCKET` kosong, upload poster otomatis disimpan di server lokal. Jalankan `php artisan storage:link` agar poster lokal bisa ditampilkan melalui web. Poster lokal bersifat publik; jangan gunakan untuk konten yang harus privat.
-
-## Midtrans
-Ambil Server Key Sandbox dan atur `MIDTRANS_PRODUCTION=false`. Di dashboard Midtrans set **Payment Notification URL** ke
-`https://DOMAIN-ANDA/midtrans/webhook`. Produksi: `MIDTRANS_PRODUCTION=true` + key produksi.
-
-## 5. Deploy ke Vercel
 ```bash
-npm i -g vercel && vercel
+php vendor/bin/phpunit
 ```
-Isi semua variabel di `.env.vercel.example` pada Settings > Environment Variables, lalu `vercel --prod`.
-Runtime PHP memakai `vercel-php` (komunitas). **Pastikan versinya mendukung PHP 8.3+** (syarat Laravel 13);
-bila belum, ubah versi di `vercel.json` atau pakai host PHP lain. Verifikasi di dokumentasi vercel-php.
 
-## Belum ada
-Reset password (butuh SMTP), perpanjangan otomatis (perpanjangan manual saja),
-teks final kebijakan privasi/ketentuan/refund, dan test otomatis.
+Untuk pengecekan standar format kode (Laravel Pint):
+```bash
+php vendor/bin/pint --test
+```
+
+---
+
+## 🔒 Catatan Keamanan
+- File `.env` lokal Anda telah tercantum di `.gitignore` dan **tidak akan ter-push ke GitHub**.
+- Jangan pernah membagikan nilai `DEPLOY_SECRET` atau `MIDTRANS_SERVER_KEY` ke publik.
