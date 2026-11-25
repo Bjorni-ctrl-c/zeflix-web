@@ -24,17 +24,22 @@ class AuditLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function record(string $action, string $description, ?User $user = null): self
+    public static function record(string $action, string $description, ?User $user = null): ?self
     {
-        $user = $user ?? auth()->user();
+        try {
+            $user = $user ?? auth()->user();
 
-        return self::create([
-            'user_id' => $user?->id,
-            'admin_name' => $user?->name ?? 'Sistem / Anonim',
-            'action' => strtoupper($action),
-            'description' => $description,
-            'ip_address' => request()->ip(),
-            'user_agent' => substr((string) request()->userAgent(), 0, 500),
-        ]);
+            return self::create([
+                'user_id' => $user?->id,
+                'admin_name' => $user?->name ?? 'Sistem / Anonim',
+                'action' => strtoupper($action),
+                'description' => $description,
+                'ip_address' => request()->ip(),
+                'user_agent' => substr((string) request()->userAgent(), 0, 500),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('AuditLog record failed: ' . $e->getMessage());
+            return null;
+        }
     }
 }

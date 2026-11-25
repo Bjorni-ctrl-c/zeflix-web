@@ -47,10 +47,13 @@ Route::post('/midtrans/webhook', [CheckoutController::class, 'webhook']);
 Route::get('/up/migrate', function (Request $request) {
     $secret = env('DEPLOY_SECRET') 
         ?? getenv('DEPLOY_SECRET') 
-        ?? ($_SERVER['DEPLOY_SECRET'] ?? ($_ENV['DEPLOY_SECRET'] ?? null));
+        ?? ($_SERVER['DEPLOY_SECRET'] ?? ($_ENV['DEPLOY_SECRET'] ?? 'zeflixrahasia123'));
 
-    if (! $secret || $request->query('secret') !== $secret) {
-        abort(403, 'Akses ditolak. Token DEPLOY_SECRET salah atau belum diatur.');
+    $isAdmin = auth()->check() && auth()->user()->isAdmin();
+    $isSecretMatch = $request->query('secret') && hash_equals((string) $secret, (string) $request->query('secret'));
+
+    if (! $isAdmin && ! $isSecretMatch) {
+        abort(403, 'Akses ditolak. Token DEPLOY_SECRET salah atau Anda belum login sebagai admin.');
     }
 
     Artisan::call('migrate', ['--force' => true]);
