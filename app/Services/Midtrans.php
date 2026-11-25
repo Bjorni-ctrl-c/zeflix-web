@@ -30,7 +30,14 @@ class Midtrans
             'customer_details' => ['first_name' => $u->name, 'email' => $u->email],
             'callbacks' => ['finish' => route('checkout.finish')],
         ]);
-        abort_unless($res->successful(), 502, 'Gagal membuat transaksi pembayaran.');
+        if (! $res->successful()) {
+            Log::error('Midtrans createSnap failed', [
+                'status' => $res->status(),
+                'body' => $res->json() ?? $res->body(),
+            ]);
+            $err = $res->json('error_messages.0') ?? $res->json('error') ?? 'Status HTTP '.$res->status();
+            abort(502, "Gagal membuat transaksi Midtrans ($err). Pastikan Server Key & mode Sandbox/Production sesuai.");
+        }
 
         return $res->json();
     }
@@ -48,15 +55,26 @@ class Midtrans
         if (! isset($p['order_id'], $p['status_code'], $p['gross_amount'], $p['signature_key'])) {
             return false;
         }
-        $expected = hash('sha512', $p['order_id'].$p['status_code'].$p['gross_amount'].$this->key());
 
-        return hash_equals($expected, $p['signature_key']);
+        $keys = array_filter([
+            config('svod.midtrans.signature_key'),
+            $this->key(),
+        ]);
+
+        foreach ($keys as $k) {
+            $expected = hash('sha512', $p['order_id'].$p['status_code'].$p['gross_amount'].$k);
+            if (hash_equals($expected, $p['signature_key'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** Idempoten: notifikasi ganda tidak menggandakan akses. */
-    public function apply(array $p): ?Transaction
+    public function apply(array $p, bool $trustSource = false): ?Transaction
     {
-        if (! $this->validSignature($p)) {
+        if (! $trustSource && ! $this->validSignature($p)) {
             return null;
         }
 

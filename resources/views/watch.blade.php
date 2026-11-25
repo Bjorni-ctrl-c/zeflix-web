@@ -60,7 +60,6 @@
       <h1>{{ $film->title }}</h1>
     </div>
     <div class="watch-badges">
-      <span class="match-score">{{ $film->match_rate ?? 98 }}% Cocok</span>
       <span class="age-badge">{{ $film->age_rating ?? '16+' }}</span>
       <span class="quality-badge">{{ $film->quality ?? '4K' }}</span>
       @if($film->duration_minutes)

@@ -5,6 +5,8 @@ use App\Http\Controllers\AdminGenreController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PublicController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
@@ -41,6 +43,23 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/midtrans/webhook', [CheckoutController::class, 'webhook']);
+
+Route::get('/up/migrate', function (Request $request) {
+    $secret = env('DEPLOY_SECRET');
+    if (! $secret || $request->query('secret') !== $secret) {
+        abort(403, 'Akses ditolak. Token DEPLOY_SECRET salah atau belum diatur.');
+    }
+
+    Artisan::call('migrate', ['--force' => true]);
+    $output = Artisan::output();
+
+    if ($request->query('seed') === 'true') {
+        Artisan::call('db:seed', ['--force' => true]);
+        $output .= "\n".Artisan::output();
+    }
+
+    return response("<pre style='background:#111;color:#46D369;padding:2rem;font-family:monospace;border-radius:8px;'>BERHASIL:\n\n{$output}</pre>");
+});
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');

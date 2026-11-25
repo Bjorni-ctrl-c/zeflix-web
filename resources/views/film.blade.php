@@ -21,7 +21,6 @@ $quality = $film->quality ?? '4K UHD';
       <h1>{{ $film->title }}</h1>
 
       <div class="film-meta">
-        <span class="match-score font-bold">{{ $matchRate }}% Cocok</span>
         <span class="age-badge">{{ $ageRating }}</span>
         <span class="quality-badge">{{ $quality }}</span>
         @if($film->duration_minutes)
@@ -49,7 +48,7 @@ $quality = $film->quality ?? '4K UHD';
           </a>
         @elseif(auth()->check())
           <a class="btn btn--netflix-play" href="{{ route('checkout.page') }}">
-            <span aria-hidden="true">🔓</span> Buka Akses Rp{{ number_format(config('svod.price'), 0, ',', '.') }}
+            <span aria-hidden="true">&#9655;</span> Buka Akses Rp{{ number_format(config('svod.price'), 0, ',', '.') }}
           </a>
         @else
           <a class="btn btn--netflix-play" href="{{ route('login') }}">

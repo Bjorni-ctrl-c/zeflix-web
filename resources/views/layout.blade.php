@@ -165,33 +165,48 @@
     }
     /* Hide navbar search on catalog page — catalog has its own search in the header */
     .page-catalog .nav-search { display: none; }
-    .nav-search__input {
-      width: 38px;
-      height: 38px;
-      padding: 0 0 0 34px;
-      border: 1px solid transparent;
-      border-radius: 99px;
-      background: transparent;
-      color: #fff;
-      font-size: .84rem;
-      transition: width .28s cubic-bezier(0.4, 0, 0.2, 1), background .2s ease, border-color .2s ease;
-      cursor: pointer;
-    }
     .nav-search__icon {
       position: absolute;
-      left: 10px;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       pointer-events: none;
-      font-size: .92rem;
-      opacity: .85;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      z-index: 3;
+      transition: color .2s ease;
     }
-    .nav-search__input:focus,
-    .nav-search__input:not(:placeholder-shown) {
-      width: 210px;
-      padding-left: 36px;
-      padding-right: 12px;
-      border-color: rgba(255, 255, 255, 0.35);
-      background: rgba(0, 0, 0, 0.85);
+    .nav-search:focus-within .nav-search__icon {
+      color: #fff;
+    }
+    .nav-search input.nav-search__input {
+      width: 38px !important;
+      min-height: 38px !important;
+      height: 38px !important;
+      padding: 0 12px 0 38px !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: 99px !important;
+      background: rgba(0, 0, 0, 0.4) !important;
+      color: #fff !important;
+      font-size: .85rem !important;
+      cursor: pointer;
+      transition: width .25s ease, background .2s ease, border-color .2s ease !important;
+    }
+    .nav-search input.nav-search__input::placeholder {
+      color: transparent;
+      transition: color .2s ease;
+    }
+    .nav-search input.nav-search__input:focus,
+    .nav-search input.nav-search__input:not(:placeholder-shown) {
+      width: 210px !important;
+      border-color: rgba(255, 255, 255, 0.55) !important;
+      background: rgba(15, 15, 15, 0.95) !important;
       cursor: text;
+    }
+    .nav-search input.nav-search__input:focus::placeholder {
+      color: #777;
     }
 
     /* Profile / Auth Dropdown */
@@ -270,10 +285,11 @@
       z-index: 95;
       background: rgba(18, 18, 18, 0.96);
       border-top: 1px solid var(--color-border);
-      padding: .4rem .5rem;
+      padding: .4rem .5rem max(.4rem, env(safe-area-inset-bottom));
       justify-content: space-around;
       align-items: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
     .mobile-subnav a {
       display: flex;
@@ -292,7 +308,7 @@
       color: #ffffff;
       font-weight: 700;
     }
-    .mobile-subnav .mob-icon { font-size: 1.1rem }
+    .mobile-subnav .mob-icon { font-size: 1.25rem; line-height: 1 }
 
     /* ==========================================================================
        BUTTONS & CALL TO ACTIONS
@@ -899,16 +915,20 @@
       position: absolute;
       top: 8px;
       right: 8px;
-      width: 32px;
-      height: 32px;
+      min-width: 28px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 50%;
-      font-size: .9rem;
+      background: rgba(229, 9, 20, 0.85);
+      border-radius: 3px;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: #fff;
       z-index: 5;
       pointer-events: none;
+      padding: 0 5px;
     }
 
     .film-card__info { padding: .6rem .2rem .2rem }
@@ -963,33 +983,49 @@
       position: relative;
       display: flex;
       align-items: center;
-    }
-    .search-input-wrap input {
       width: 100%;
-      height: 44px;
-      padding: .5rem 2.5rem .5rem 2.4rem;
-      border: 1px solid var(--color-border-strong);
-      border-radius: var(--radius-sm);
-      background: rgba(25, 25, 25, 0.9);
-      color: #fff;
-      font-size: .9rem;
-    }
-    .search-input-wrap input:focus {
-      border-color: var(--netflix-red);
-      outline: none;
     }
     .search-input-wrap .search-icon {
       position: absolute;
-      left: .8rem;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
       color: #888;
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .search-input-wrap input[type="text"] {
+      width: 100% !important;
+      height: 44px !important;
+      min-height: 44px !important;
+      padding: 0 2.5rem 0 2.85rem !important;
+      border: 1px solid var(--color-border-strong) !important;
+      border-radius: var(--radius-sm) !important;
+      background: rgba(25, 25, 25, 0.9) !important;
+      color: #fff !important;
+      font-size: .9rem !important;
+    }
+    .search-input-wrap input[type="text"]:focus {
+      border-color: var(--netflix-red) !important;
+      outline: none !important;
     }
     .search-input-wrap .search-clear-btn {
       position: absolute;
-      right: .8rem;
-      color: #999;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
       font-weight: 700;
-      padding: .2rem .4rem;
+      padding: 4px 6px;
+      cursor: pointer;
+      z-index: 2;
+      transition: color .15s ease;
+    }
+    .search-input-wrap .search-clear-btn:hover {
+      color: #fff;
     }
 
     .catalog-controls {
@@ -1225,12 +1261,25 @@
     .netflix-modal {
       position: relative;
       width: min(100%, 780px);
+      max-height: 90vh;
+      overflow-y: auto;
       border-radius: var(--radius-md);
       background: #181818;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      overflow: hidden;
       animation: modalZoom .22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (max-width: 640px) {
+      .netflix-modal__backdrop-img {
+        height: 220px;
+        padding: 1.25rem;
+      }
+      .netflix-modal__body {
+        padding: 1.25rem 1.25rem 1.5rem;
+      }
+      .netflix-modal__hero-actions {
+        flex-wrap: wrap;
+      }
     }
     @keyframes modalZoom {
       from { transform: scale(0.92); opacity: 0 }
@@ -1490,6 +1539,38 @@
     }
     .field-hint { color: var(--color-text-subtle); font-size: .75rem; font-weight: 450 }
     .required-mark { color: var(--netflix-red) }
+
+    /* Password toggle */
+    input::-ms-reveal,
+    input::-ms-clear {
+      display: none;
+    }
+    .password-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-wrap input {
+      padding-right: 48px;
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 4px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color .15s;
+    }
+    .pw-toggle:hover { color: #fff }
+    .pw-toggle.is-visible { color: var(--netflix-red) }
     input:not([type="checkbox"]), select, textarea {
       width: 100%;
       min-height: 44px;
@@ -1759,7 +1840,7 @@
     @media (max-width: 820px) {
       .bar-nav { display: none }
       .mobile-subnav { display: flex }
-      body { padding-bottom: 60px }
+      body { padding-bottom: calc(64px + env(safe-area-inset-bottom)) }
       .landing-steps, .landing-features { grid-template-columns: 1fr }
       .subscription-panel { grid-template-columns: 1fr }
       .account-grid { grid-template-columns: 1fr }
@@ -1805,7 +1886,9 @@
     <div class="bar-right">
       {{-- Real-time Search Box in Navbar --}}
       <form method="get" action="{{ route('catalog') }}" class="nav-search" id="nav-search-form">
-        <span class="nav-search__icon" aria-hidden="true"></span>
+        <span class="nav-search__icon" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
         <input type="text"
                name="q"
                class="nav-search__input"
@@ -1861,34 +1944,43 @@
   {{-- Mobile Bottom Navigation --}}
   <nav class="mobile-subnav" aria-label="Navigasi Ponsel">
     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">
-      <span class="mob-icon" aria-hidden="true">🏠</span>
+      <span class="mob-icon" aria-hidden="true">&#9671;</span>
       <span>Beranda</span>
     </a>
     <a href="{{ route('catalog') }}" class="{{ request()->routeIs('catalog') ? 'is-active' : '' }}">
-      <span class="mob-icon" aria-hidden="true">🎬</span>
+      <span class="mob-icon" aria-hidden="true">&#9641;</span>
       <span>Katalog</span>
     </a>
     @auth
       @if(auth()->user()->isAdmin() || auth()->user()->hasActiveSubscription())
       <a href="{{ route('watchlist') }}" class="{{ request()->routeIs('watchlist') ? 'is-active' : '' }}">
-        <span class="mob-icon" aria-hidden="true">🔖</span>
+        <span class="mob-icon" aria-hidden="true">&#9636;</span>
         <span>Daftar Saya</span>
+      </a>
+      @else
+      <a href="{{ route('checkout.page') }}" class="{{ request()->routeIs('checkout.page') ? 'is-active' : '' }}" style="color: var(--netflix-red);">
+        <span class="mob-icon" aria-hidden="true">&#9670;</span>
+        <span>Buka Akses</span>
       </a>
       @endif
       <a href="{{ route('account') }}" class="{{ request()->routeIs('account') ? 'is-active' : '' }}">
-        <span class="mob-icon" aria-hidden="true">👤</span>
+        <span class="mob-icon" aria-hidden="true">&#9711;</span>
         <span>Akun</span>
       </a>
       @if(auth()->user()->isAdmin())
       <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.*') ? 'is-active' : '' }}">
-        <span class="mob-icon" aria-hidden="true">⚙</span>
+        <span class="mob-icon" aria-hidden="true">&#9632;</span>
         <span>Admin</span>
       </a>
       @endif
     @else
       <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }}">
-        <span class="mob-icon" aria-hidden="true">🔑</span>
+        <span class="mob-icon" aria-hidden="true">&#9654;</span>
         <span>Masuk</span>
+      </a>
+      <a href="{{ route('register') }}" class="{{ request()->routeIs('register') ? 'is-active' : '' }}">
+        <span class="mob-icon" aria-hidden="true">&#9651;</span>
+        <span>Daftar</span>
       </a>
     @endauth
   </nav>
@@ -1912,7 +2004,6 @@
       </div>
       <div class="netflix-modal__body">
         <div class="netflix-modal__meta-row">
-          <span class="match-score font-bold" id="modal-match-rate">98% Cocok</span>
           <span class="age-badge" id="modal-age-rating">16+</span>
           <span class="quality-badge" id="modal-quality">4K UHD</span>
           <span id="modal-duration">24m</span>
@@ -2052,7 +2143,6 @@
         const film = await res.json();
 
         document.getElementById('modal-film-title').textContent = film.title;
-        document.getElementById('modal-match-rate').textContent = `${film.match_rate}% Cocok`;
         document.getElementById('modal-age-rating').textContent = film.age_rating;
         document.getElementById('modal-quality').textContent = film.quality;
         document.getElementById('modal-duration').textContent = film.duration || '';
@@ -2068,7 +2158,7 @@
 
         const playBtn = document.getElementById('modal-play-btn');
         playBtn.href = film.can_watch ? film.watch_url : film.checkout_url;
-        playBtn.innerHTML = `<span aria-hidden="true">${film.can_watch ? '▶' : '🔓'}</span> ${film.can_watch ? 'Putar' : 'Buka Akses'}`;
+        playBtn.innerHTML = `<span aria-hidden="true">${film.can_watch ? '▶' : '&#9655;'}</span> ${film.can_watch ? 'Putar' : 'Buka Akses'}`;
 
         const wlBtn = document.getElementById('modal-watchlist-btn');
         wlBtn.setAttribute('data-slug', film.slug);
@@ -2085,6 +2175,9 @@
     }
 
     document.addEventListener('click', function(e) {
+      if (e.target.closest('.film-card__btn--play') || e.target.closest('.js-watchlist-toggle')) {
+        return;
+      }
       const qBtn = e.target.closest('.js-quick-view');
       if (qBtn) {
         e.preventDefault();
@@ -2113,6 +2206,21 @@
         modalBackdrop.classList.remove('is-open');
         modalBackdrop.setAttribute('aria-hidden', 'true');
       }
+    });
+    // Password Visibility Toggle
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.pw-toggle');
+      if (!btn) return;
+      const wrap = btn.closest('.password-wrap');
+      if (!wrap) return;
+      const input = wrap.querySelector('input');
+      if (!input) return;
+
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.classList.toggle('is-visible', isPassword);
+      btn.textContent = isPassword ? '\u25cf' : '\u25cb';
+      btn.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
     });
   </script>
 </body>

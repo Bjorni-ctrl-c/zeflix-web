@@ -20,7 +20,6 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
       <h1 class="netflix-billboard__title">{{ $featured->title }}</h1>
 
       <div class="netflix-billboard__meta">
-        <span class="match-score font-bold">{{ $featured->match_rate ?? 98 }}% Cocok</span>
         <span class="age-badge">{{ $featured->age_rating ?? '16+' }}</span>
         <span class="quality-badge">{{ $featured->quality ?? '4K UHD' }}</span>
         @if($featured->duration_minutes)
@@ -40,12 +39,12 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
         </a>
         @else
         <a class="btn btn--netflix-play" href="{{ route('checkout.page') }}">
-          <span aria-hidden="true">🔒</span> Berlangganan untuk Menonton
+          <span aria-hidden="true">&#9655;</span> Berlangganan untuk Menonton
         </a>
         @endif
 
         <button type="button" class="btn btn--netflix-secondary js-quick-view" data-slug="{{ $featured->slug }}">
-          <span aria-hidden="true">ℹ</span> Info Selengkapnya
+          <span aria-hidden="true">+</span> Info Selengkapnya
         </button>
 
         @auth
@@ -245,8 +244,8 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
       </li>
       <li class="landing-step">
         <span class="landing-step__number">02</span>
-        <h3>Nonton atau buka akses penuh</h3>
-        <p>Tonton film gratis langsung, atau selesaikan pembayaran satu kali <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong> untuk akses seluruh katalog premium.</p>
+        <h3>Buka akses sekali</h3>
+        <p>Tonton film gratis langsung, atau selesaikan pembayaran satu kali sebesar <strong>Rp{{ number_format(config('svod.price'), 0, ',', '.') }}</strong> untuk akses seluruh katalog premium tanpa biaya langganan bulanan.</p>
       </li>
       <li class="landing-step">
         <span class="landing-step__number">03</span>
@@ -304,7 +303,7 @@ $isInWatchlist = in_array($featured->id, $watchlistIds ?? []);
     </div>
   </section>
   @else
-  <section class="landing-member-cta" style="margin-top: 3rem; border: 1px solid rgba(229, 9, 20, 0.35); border-radius: var(--radius-md); padding: 2rem; background: var(--color-surface); display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;">
+  <section class="landing-member-cta" style="margin-top: 3rem; border: 1px solid rgba(229, 9, 20, 0.35); border-radius: var(--radius-md); padding: 2rem; background: var(--color-surface); display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
     <div>
       <p class="eyebrow"><span class="eyebrow__line"></span> Lanjutkan ceritamu</p>
       <h2>Temukan tontonan berikutnya.</h2>

@@ -16,7 +16,12 @@
     <p class="auth-card__intro">Gunakan email dan password akunmu.</p>
     <form class="form-stack" method="post" action="{{ route('login') }}">@csrf
       <label>Email<input type="email" name="email" value="{{ old('email') }}" autocomplete="email" required autofocus></label>
-      <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+      <label>Password
+        <div class="password-wrap">
+          <input type="password" name="password" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
+        </div>
+      </label>
       <label class="check-label"><input type="checkbox" name="remember"> <span>Ingat saya</span></label>
       <button class="btn btn--primary btn--wide">Masuk</button>
       <p class="form-footnote">Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>

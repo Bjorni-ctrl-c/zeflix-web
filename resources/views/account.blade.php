@@ -69,11 +69,17 @@
         <label>
           Password Baru
           <span class="field-hint" style="color:#888; font-size:.72rem;">Kosongkan jika tidak ingin mengganti.</span>
-          <input type="password" name="password" autocomplete="new-password">
+          <div class="password-wrap">
+            <input type="password" name="password" autocomplete="new-password">
+            <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
+          </div>
         </label>
         <label>
           Ulangi Password Baru
-          <input type="password" name="password_confirmation" autocomplete="new-password">
+          <div class="password-wrap">
+            <input type="password" name="password_confirmation" autocomplete="new-password">
+            <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
+          </div>
         </label>
       </div>
       <div style="margin-top: 1rem;">

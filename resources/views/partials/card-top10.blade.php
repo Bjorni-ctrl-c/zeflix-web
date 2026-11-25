@@ -9,9 +9,9 @@ $canWatch = $f->canBeWatchedBy(auth()->user());
 <div class="top10-item" data-film-slug="{{ $f->slug }}">
   <div class="top10-rank" aria-hidden="true">{{ $rank }}</div>
   <div class="film-card top10-card">
-    <div class="film-card__poster" @if($posterUrl) style="background-image:url('{{ $posterUrl }}')" @endif>
+    <div class="film-card__poster js-quick-view" data-slug="{{ $f->slug }}" role="button" tabindex="0" @if($posterUrl) style="background-image:url('{{ $posterUrl }}'); cursor:pointer;" @else style="cursor:pointer;" @endif>
       {{-- Full card clickable link --}}
-      <a class="film-card__link" href="{{ route('film', $f) }}" aria-label="Lihat {{ $f->title }}"></a>
+      <a class="film-card__link js-quick-view" href="{{ route('film', $f) }}" data-slug="{{ $f->slug }}" aria-label="Lihat {{ $f->title }}"></a>
 
       @if(!$posterUrl)
         <span class="film-card__monogram" aria-hidden="true">ZF</span>
@@ -23,11 +23,11 @@ $canWatch = $f->canBeWatchedBy(auth()->user());
 
       @if(!$canWatch)
       <div class="film-card__lock" title="Berlangganan untuk menonton">
-        <span aria-hidden="true">🔒</span>
+        <span aria-hidden="true">P</span>
       </div>
       @endif
 
-      <div class="film-card__overlay">
+      <div class="film-card__overlay js-quick-view" data-slug="{{ $f->slug }}">
         <div class="film-card__actions">
           @if($canWatch)
           <a class="film-card__btn film-card__btn--play" href="{{ route('watch', $f) }}" title="Putar Film" aria-label="Putar {{ $f->title }}">
@@ -35,7 +35,7 @@ $canWatch = $f->canBeWatchedBy(auth()->user());
           </a>
           @else
           <a class="film-card__btn film-card__btn--play" href="{{ route('checkout.page') }}" title="Berlangganan" aria-label="Berlangganan untuk menonton {{ $f->title }}">
-            <span aria-hidden="true">🔒</span>
+            <span aria-hidden="true">&#9655;</span>
           </a>
           @endif
 
@@ -59,9 +59,8 @@ $canWatch = $f->canBeWatchedBy(auth()->user());
     </div>
 
     <div class="film-card__info">
-      <a class="film-card__title" href="{{ route('film', $f) }}">{{ $f->title }}</a>
+      <a class="film-card__title js-quick-view" href="{{ route('film', $f) }}" data-slug="{{ $f->slug }}">{{ $f->title }}</a>
       <div class="film-card__meta">
-        <span class="match-score--inline">{{ $matchRate }}% Cocok</span>
         <span>{{ $f->genre }}</span>
       </div>
     </div>

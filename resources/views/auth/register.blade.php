@@ -17,8 +17,18 @@
     <form class="form-stack" method="post" action="{{ route('register') }}">@csrf
       <label>Nama<input name="name" value="{{ old('name') }}" autocomplete="name" required autofocus></label>
       <label>Email<input type="email" name="email" value="{{ old('email') }}" autocomplete="email" required></label>
-      <label>Password <span class="field-hint">Minimal 8 karakter</span><input type="password" name="password" autocomplete="new-password" required></label>
-      <label>Ulangi password<input type="password" name="password_confirmation" autocomplete="new-password" required></label>
+      <label>Password <span class="field-hint">Minimal 8 karakter</span>
+        <div class="password-wrap">
+          <input type="password" name="password" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
+        </div>
+      </label>
+      <label>Ulangi password
+        <div class="password-wrap">
+          <input type="password" name="password_confirmation" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" aria-label="Tampilkan password">&#9679;</button>
+        </div>
+      </label>
       <button class="btn btn--primary btn--wide">Daftar</button>
       <p class="form-footnote">Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></p>
     </form>

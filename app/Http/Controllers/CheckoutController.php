@@ -35,6 +35,15 @@ class CheckoutController extends Controller
         abort_unless(isset($snap['redirect_url'], $snap['token']), 502, 'Midtrans tidak mengembalikan tautan pembayaran.');
         $t->update(['snap_token' => $snap['token'] ?? null, 'redirect_url' => $snap['redirect_url'] ?? null]);
 
+        if ($r->wantsJson() || $r->ajax()) {
+            return response()->json([
+                'status' => 'ok',
+                'token' => $snap['token'],
+                'redirect_url' => $snap['redirect_url'],
+                'order_id' => $t->order_id,
+            ]);
+        }
+
         return redirect()->away($snap['redirect_url']);
     }
 
@@ -44,7 +53,7 @@ class CheckoutController extends Controller
         $t = Transaction::where('user_id', $r->user()->id)->where('order_id', $r->query('order_id'))->first();
         abort_unless($t, 404);
         if ($t->status === 'pending' && ($p = $mt->fetchStatus($t->order_id))) {
-            $t = $mt->apply($p) ?? $t;
+            $t = $mt->apply($p, trustSource: true) ?? $t;
         }
 
         return view('status', ['t' => $t->fresh()]);

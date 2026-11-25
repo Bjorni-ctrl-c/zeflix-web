@@ -38,7 +38,8 @@ class AccessFlowTest extends TestCase
             ->assertOk()
             ->assertSee('Mulai dalam tiga langkah')
             ->assertSee('Buka akses');
-        $this->get(route('catalog'))->assertRedirect(route('checkout.page'));
+        // Non-subscribers can now browse catalog (films shown with lock badge)
+        $this->get(route('catalog'))->assertOk();
         $this->get(route('checkout.page'))->assertOk()->assertSee('Rp1');
     }
 
@@ -51,10 +52,10 @@ class AccessFlowTest extends TestCase
             ->assertOk()
             ->assertSee('Mulai dalam tiga langkah')
             ->assertSee('Semua yang kamu butuhkan untuk menemukan cerita.')
-            ->assertSee('Lanjutkan ke pembayaran')
-            ->assertDontSee($film->title);
+            ->assertSee('Lanjutkan ke pembayaran');
 
-        $this->get(route('catalog'))->assertRedirect(route('checkout.page'));
+        // Non-subscribers can now browse catalog (lock icons shown, premium content gated)
+        $this->get(route('catalog'))->assertOk();
     }
 
     public function test_paid_user_gets_permanent_catalog_access(): void

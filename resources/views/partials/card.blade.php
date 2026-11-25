@@ -8,9 +8,9 @@ $canWatch = $f->canBeWatchedBy(auth()->user());
 $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchProgresses->firstWhere('user_id', auth()->id())->progress_percent ?? null);
 @endphp
 <div class="film-card" data-film-slug="{{ $f->slug }}" data-film-id="{{ $f->id }}">
-  <div class="film-card__poster" @if($posterUrl) style="background-image:url('{{ $posterUrl }}')" @endif>
+  <div class="film-card__poster js-quick-view" data-slug="{{ $f->slug }}" role="button" tabindex="0" @if($posterUrl) style="background-image:url('{{ $posterUrl }}'); cursor:pointer;" @else style="cursor:pointer;" @endif>
     {{-- Full card clickable link --}}
-    <a class="film-card__link" href="{{ route('film', $f) }}" aria-label="Lihat {{ $f->title }}"></a>
+    <a class="film-card__link js-quick-view" href="{{ route('film', $f) }}" data-slug="{{ $f->slug }}" aria-label="Lihat {{ $f->title }}"></a>
 
     @if(!$posterUrl)
       <span class="film-card__monogram" aria-hidden="true">ZF</span>
@@ -22,12 +22,12 @@ $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchPr
 
     @if(!$canWatch)
     <div class="film-card__lock" title="Berlangganan untuk menonton">
-      <span aria-hidden="true">🔒</span>
+      <span aria-hidden="true">P</span>
     </div>
     @endif
 
     {{-- Netflix Card Hover Quick Actions --}}
-    <div class="film-card__overlay">
+    <div class="film-card__overlay js-quick-view" data-slug="{{ $f->slug }}">
       <div class="film-card__actions">
         @if($canWatch)
         <a class="film-card__btn film-card__btn--play" href="{{ route('watch', $f) }}" title="Putar Film" aria-label="Putar {{ $f->title }}">
@@ -35,7 +35,7 @@ $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchPr
         </a>
         @else
         <a class="film-card__btn film-card__btn--play" href="{{ route('checkout.page') }}" title="Berlangganan" aria-label="Berlangganan untuk menonton {{ $f->title }}">
-          <span aria-hidden="true">🔒</span>
+          <span aria-hidden="true">&#9655;</span>
         </a>
         @endif
 
@@ -57,7 +57,6 @@ $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchPr
       </div>
 
       <div class="film-card__hover-meta">
-        <span class="match-score">{{ $matchRate }}% Cocok</span>
         <span class="age-badge">{{ $ageRating }}</span>
         <span class="quality-badge">{{ $quality }}</span>
       </div>
@@ -71,9 +70,8 @@ $progressPercent = isset($progress) ? $progress->progress_percent : ($f->watchPr
   </div>
 
   <div class="film-card__info">
-    <a class="film-card__title" href="{{ route('film', $f) }}">{{ $f->title }}</a>
+    <a class="film-card__title js-quick-view" href="{{ route('film', $f) }}" data-slug="{{ $f->slug }}">{{ $f->title }}</a>
     <div class="film-card__meta">
-      <span class="match-score--inline">{{ $matchRate }}% Cocok</span>
       <span>{{ $f->genre }}</span>
       @if($f->duration_minutes)
       <span>{{ $f->duration_minutes }}m</span>
