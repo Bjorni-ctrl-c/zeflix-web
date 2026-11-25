@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Film;
 use App\Models\Genre;
 use App\Models\Subscription;
@@ -22,6 +23,7 @@ class AdminController extends Controller
                 ->distinct('user_id')->count('user_id'),
             'revenue' => Transaction::where('status', 'paid')->sum('amount'),
             'recent' => Transaction::with('user')->latest()->take(10)->get(),
+            'recentLogs' => AuditLog::with('user')->latest()->take(5)->get(),
         ]);
     }
 
@@ -42,7 +44,8 @@ class AdminController extends Controller
 
     public function store(Request $r)
     {
-        Film::create($this->data($r));
+        $film = Film::create($this->data($r));
+        AuditLog::record('FILM_CREATE', "Menerbitkan film baru '{$film->title}' (status: {$film->status})");
 
         return redirect()->route('admin.films.index')->with('ok', 'Film disimpan.');
     }
@@ -50,13 +53,16 @@ class AdminController extends Controller
     public function update(Request $r, Film $film)
     {
         $film->update($this->data($r, $film));
+        AuditLog::record('FILM_UPDATE', "Memperbarui film '{$film->title}' (status: {$film->status})");
 
         return redirect()->route('admin.films.index')->with('ok', 'Film diperbarui.');
     }
 
     public function destroy(Film $film)
     {
+        $title = $film->title;
         $film->delete();
+        AuditLog::record('FILM_DELETE', "Menghapus film '{$title}'");
 
         return redirect()->route('admin.films.index')->with('ok', 'Film dihapus.');
     }
@@ -69,6 +75,11 @@ class AdminController extends Controller
     public function users()
     {
         return view('admin.users', ['rows' => User::latest()->paginate(30)]);
+    }
+
+    public function auditLogs()
+    {
+        return view('admin.audit-logs', ['rows' => AuditLog::with('user')->latest()->paginate(30)]);
     }
 
     private function data(Request $r, ?Film $film = null): array

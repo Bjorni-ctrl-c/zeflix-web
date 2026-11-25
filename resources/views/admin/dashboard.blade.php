@@ -12,4 +12,42 @@
   <article class="stat-card stat-card--accent"><span class="stat-card__label">Pendapatan kotor</span><strong>Rp{{ number_format($revenue, 0, ',', '.') }}</strong><span class="stat-card__detail">Total transaksi berhasil</span></article>
 </div>
 <section class="surface-card admin-section"><div class="card-heading"><div><p class="eyebrow"><span class="eyebrow__line"></span> Aktivitas terbaru</p><h2>Transaksi terbaru</h2></div><a class="text-link" href="{{ route('admin.transactions') }}">Semua transaksi <span aria-hidden="true">→</span></a></div>@include('admin.tx-table', ['rows' => $recent])</section>
+
+@if(isset($recentLogs) && $recentLogs->count())
+<section class="surface-card admin-section" style="margin-top: 2rem;">
+  <div class="card-heading">
+    <div>
+      <p class="eyebrow"><span class="eyebrow__line"></span> Keamanan</p>
+      <h2>Log Aktivitas Administrator Terkini</h2>
+    </div>
+    <a class="text-link" href="{{ route('admin.audit-logs') }}">Semua log audit <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Waktu</th>
+          <th>Admin</th>
+          <th>Aksi</th>
+          <th>Keterangan</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($recentLogs as $log)
+          <tr>
+            <td style="white-space: nowrap; font-size: .8rem; color: #888;">
+              {{ $log->created_at->timezone('Asia/Jakarta')->format('d M H:i') }}
+            </td>
+            <td><strong>{{ $log->admin_name }}</strong></td>
+            <td><span class="status-pill status-pill--muted">{{ $log->action }}</span></td>
+            <td style="color: #ddd;">{{ $log->description }}</td>
+            <td style="font-family: monospace; font-size: .8rem; color: #aaa;">{{ $log->ip_address }}</td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</section>
+@endif
 @endsection

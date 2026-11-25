@@ -60,7 +60,8 @@
       <div class="form-grid">
         <label>
           Nama Lengkap
-          <input name="name" value="{{ old('name', auth()->user()->name) }}" autocomplete="name" maxlength="100" required>
+          <input name="name" value="{{ old('name', auth()->user()->name) }}" autocomplete="name" minlength="3" maxlength="50" required>
+          <span class="field-hint" style="color:#888; font-size:.72rem;">Maksimal 50 karakter (hanya huruf dan spasi)</span>
         </label>
         <label>
           Email

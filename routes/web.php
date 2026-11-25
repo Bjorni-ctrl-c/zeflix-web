@@ -65,6 +65,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/transaksi', [AdminController::class, 'transactions'])->name('transactions');
     Route::get('/pengguna', [AdminController::class, 'users'])->name('users');
+    Route::get('/log-audit', [AdminController::class, 'auditLogs'])->name('audit-logs');
     Route::resource('films', AdminController::class)->except(['show'])
         ->parameters(['films' => 'film'])
         ->names(['index' => 'films.index', 'create' => 'films.create', 'store' => 'films.store', 'edit' => 'films.edit', 'update' => 'films.update']);

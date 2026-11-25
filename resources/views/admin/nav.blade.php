@@ -4,4 +4,5 @@
   <a class="{{ request()->routeIs('admin.genres.*') ? 'is-active' : '' }}" href="{{ route('admin.genres.index') }}">Genre</a>
   <a class="{{ request()->routeIs('admin.transactions') ? 'is-active' : '' }}" href="{{ route('admin.transactions') }}">Transaksi</a>
   <a class="{{ request()->routeIs('admin.users') ? 'is-active' : '' }}" href="{{ route('admin.users') }}">Pengguna</a>
+  <a class="{{ request()->routeIs('admin.audit-logs') ? 'is-active' : '' }}" href="{{ route('admin.audit-logs') }}">Log Audit</a>
 </nav>
