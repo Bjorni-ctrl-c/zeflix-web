@@ -251,7 +251,7 @@
     .profile-menu:focus-within .profile-dropdown {
       display: block;
     }
-    .profile-dropdown a, .profile-dropdown button {
+    .profile-dropdown a, .profile-dropdown button, .profile-dropdown .dropdown-btn-reset {
       width: 100%;
       display: flex;
       align-items: center;
@@ -261,11 +261,16 @@
       background: transparent;
       color: #d1d1d1;
       font-size: .84rem;
+      font-family: inherit;
+      font-weight: 400;
+      line-height: 1.4;
       text-align: left;
       cursor: pointer;
       transition: background .15s ease, color .15s ease;
+      text-decoration: none;
+      box-sizing: border-box;
     }
-    .profile-dropdown a:hover, .profile-dropdown button:hover {
+    .profile-dropdown a:hover, .profile-dropdown button:hover, .profile-dropdown .dropdown-btn-reset:hover {
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
@@ -1917,7 +1922,7 @@
             <a href="{{ route('admin.dashboard') }}" style="color: #ff9e9e;">Panel Admin</a>
             @endif
             <hr>
-            <button type="button" id="js-logout-btn" style="background:none;border:none;padding:0;cursor:pointer;width:100%;text-align:left;color:inherit;font:inherit;">Keluar dari Zeflix</button>
+            <button type="button" id="js-logout-btn" class="dropdown-btn-reset">Keluar dari Zeflix</button>
             <form id="js-logout-form" method="post" action="{{ route('logout') }}" style="display:none;">@csrf</form>
           </div>
         </div>
