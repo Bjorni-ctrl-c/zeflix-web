@@ -34,16 +34,16 @@
       <tbody>
         @forelse($rows as $log)
           <tr>
-            <td style="white-space: nowrap; font-size: .8rem; color: #888;">
+            <td data-label="Waktu" style="white-space: nowrap; font-size: .8rem; color: #888;">
               {{ $log->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }} WIB
             </td>
-            <td>
+            <td data-label="Administrator">
               <strong>{{ $log->admin_name }}</strong>
               @if($log->user)
                 <div style="font-size: .72rem; color: #777;">ID: #{{ $log->user->id }}</div>
               @endif
             </td>
-            <td>
+            <td data-label="Aksi">
               @php
                 $pillColor = match(true) {
                   str_contains($log->action, 'DELETE') => 'status-pill--failed',
@@ -54,10 +54,10 @@
               @endphp
               <span class="status-pill {{ $pillColor }}">{{ $log->action }}</span>
             </td>
-            <td style="max-width: 400px; color: #ddd;">
+            <td data-label="Keterangan" style="max-width: 400px; color: #ddd;">
               {{ $log->description }}
             </td>
-            <td style="font-family: monospace; font-size: .8rem; color: #aaa;">
+            <td data-label="IP Address" style="font-family: monospace; font-size: .8rem; color: #aaa;">
               {{ $log->ip_address ?? '-' }}
             </td>
           </tr>

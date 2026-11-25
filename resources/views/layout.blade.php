@@ -1848,43 +1848,27 @@
       .mobile-subnav { display: flex }
       body { padding-bottom: calc(64px + env(safe-area-inset-bottom)) }
       .bar { padding: 0 1rem }
-      .nav-search__input { width: 110px; font-size: .82rem }
+      .nav-search__input { width: 100px; font-size: .82rem }
 
-      /* ---- Hero Billboard (film utama) ---- */
+      /* ---- Hero Billboard (film utama / logged in) ---- */
       .netflix-billboard {
         min-height: 60vh;
         padding: calc(var(--nav-height) + 1.5rem) 1.25rem 3rem;
         align-items: flex-end;
       }
-      .netflix-billboard__title {
-        font-size: clamp(2.2rem, 10vw, 3.2rem);
-        margin-bottom: .6rem;
-      }
-      .netflix-billboard__synopsis {
-        font-size: .9rem;
-        -webkit-line-clamp: 2;
-        margin-bottom: 1.2rem;
-      }
-      .netflix-billboard__actions {
-        gap: .5rem;
-      }
-      .netflix-billboard__actions .btn {
-        font-size: .85rem;
-        padding: .55rem 1rem;
-        min-height: 40px;
-      }
+      .netflix-billboard__title { font-size: clamp(2rem, 9vw, 3rem); margin-bottom: .6rem }
+      .netflix-billboard__synopsis { font-size: .88rem; -webkit-line-clamp: 2; margin-bottom: 1.2rem }
+      .netflix-billboard__actions { gap: .5rem }
+      .netflix-billboard__actions .btn { font-size: .85rem; padding: .55rem 1rem; min-height: 40px }
 
       /* ---- Landing Hero (tamu / belum subscribe) ---- */
-      .hero--landing {
-        min-height: auto;
-        padding: calc(var(--nav-height) + 2rem) 1.25rem 2.5rem;
-      }
+      .hero--landing { min-height: auto; padding: calc(var(--nav-height) + 2rem) 1.25rem 2.5rem }
       .hero__inner { flex-direction: column; text-align: left; gap: 1.5rem }
       .hero__poster--landing { display: none }
-      .hero__copy h1 { font-size: clamp(2.4rem, 9vw, 3.5rem) }
-      .hero__description { font-size: .92rem }
+      .hero__copy h1 { font-size: clamp(2.2rem, 8vw, 3rem) }
+      .hero__description { font-size: .9rem }
       .hero__actions { flex-wrap: wrap; gap: .6rem }
-      .hero__actions .btn { flex: 1; min-width: 140px }
+      .hero__actions .btn { flex: 1 1 140px }
 
       /* ---- Film Row Cards ---- */
       .row .film-card { flex-basis: 140px }
@@ -1896,21 +1880,20 @@
       .landing-steps, .landing-features { grid-template-columns: 1fr }
       .subscription-panel { grid-template-columns: 1fr }
       .account-grid { grid-template-columns: 1fr }
-      .auth-layout { grid-template-columns: 1fr }
+      .auth-layout { grid-template-columns: 1fr; border-radius: var(--radius-md); margin: 1rem auto }
       .auth-aside { display: none }
+      .auth-card { padding: 1.75rem 1.5rem }
       .form-grid { grid-template-columns: 1fr }
       .page-intro--split { align-items: flex-start; flex-direction: column; gap: 1rem }
       .catalog-search-form { width: 100% }
 
-      /* ---- Auth Card full width ---- */
-      .auth-layout { border-radius: var(--radius-md); margin: 1rem auto }
-      .auth-card { padding: 1.75rem 1.5rem }
+      /* ---- Watch / Player Page ---- */
+      .watch-page { padding-top: calc(var(--nav-height) + .5rem); padding-left: .75rem; padding-right: .75rem }
+      .watch-top-bar { flex-direction: column; align-items: flex-start; gap: .5rem; margin-bottom: .75rem }
+      .watch-title-meta { text-align: left }
+      .watch-footer-info { margin-top: 1.2rem }
 
-      /* ---- Account & Checkout ---- */
-      .account-profile { flex-direction: row; align-items: center }
-      .account-grid > * { width: 100% }
-
-      /* ---- Admin ---- */
+      /* ---- Admin Tables → Card mode ---- */
       .stats-grid { grid-template-columns: repeat(2, 1fr) }
       .table-action { text-align: left }
       .data-table thead { display: none }
@@ -1927,14 +1910,14 @@
         justify-content: space-between;
         align-items: center;
         padding: .4rem 0;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,.05);
         font-size: .84rem;
       }
       .data-table td:last-child { border-bottom: 0 }
       .data-table td[data-label]::before {
         content: attr(data-label);
         color: #888;
-        font-size: .74rem;
+        font-size: .72rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: .06em;
@@ -1943,26 +1926,66 @@
       }
       .table-action form { display: inline-flex; margin-left: 0; margin-right: .35rem }
 
-      /* ---- Footer ---- */
-      footer { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom)) }
+      /* ---- Admin nav scroll ---- */
+      .admin-nav { gap: .35rem }
+      .admin-nav a { font-size: .8rem; padding: .45rem .75rem }
 
-      /* ---- Wrap padding ---- */
+      /* ---- Status / Checkout / Account ---- */
+      .status-page { margin: 1rem; padding: 1.5rem }
+      .account-profile { flex-direction: row }
+      .account-history .data-table td { flex-direction: column; align-items: flex-start }
+
+      /* ---- Surface card ---- */
+      .surface-card, .form-panel { padding: 1.25rem }
+
+      /* ---- Wrap content ---- */
       .wrap { padding-left: 1rem; padding-right: 1rem }
+
+      /* ---- Footer ---- */
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+      }
     }
 
     @media (max-width: 480px) {
-      /* Extra-small phones */
+      /* Extra-small phones (≤480px) */
       .netflix-billboard { min-height: 55vh; padding: calc(var(--nav-height) + 1rem) 1rem 2.5rem }
-      .netflix-billboard__title { font-size: clamp(1.9rem, 9vw, 2.6rem) }
-      .netflix-billboard__actions { flex-direction: column; align-items: flex-start }
-      .netflix-billboard__actions .btn { width: 100% }
-      .hero__actions .btn { width: 100% }
-      .btn--wide { width: 100% }
-      .surface-card { padding: 1.25rem }
-      .account-avatar { width: 44px; height: 44px; font-size: 1.1rem }
+      .netflix-billboard__title { font-size: clamp(1.8rem, 9vw, 2.4rem) }
+      .netflix-billboard__actions { flex-direction: column; align-items: stretch }
+      .netflix-billboard__actions .btn,
+      .hero__actions .btn { width: 100%; text-align: center; justify-content: center }
+
+      .hero--landing { padding: calc(var(--nav-height) + 1.5rem) 1rem 2rem }
+
+      /* Watch page — player edge-to-edge on small phones */
+      .watch-page { padding-left: 0; padding-right: 0 }
+      .player { border-radius: 0; border-left: 0; border-right: 0 }
+      .watch-top-bar, .watch-footer-info { padding-left: 1rem; padding-right: 1rem }
+
+      /* Auth */
+      .auth-card { padding: 1.5rem 1.25rem }
+
+      /* Buttons */
+      .btn--wide, .form-actions .btn { width: 100% }
+      .form-actions { flex-direction: column-reverse; gap: .5rem }
+
+      /* Stats admin 1 col */
       .stats-grid { grid-template-columns: 1fr }
-      .form-actions { flex-direction: column-reverse }
-      .form-actions .btn { width: 100% }
+
+      /* Surface card tighter */
+      .surface-card, .form-panel { padding: 1rem }
+
+      /* Checkout modal full-width */
+      #checkout-verify-modal > div { padding: 1.5rem 1.25rem }
+
+      /* Confirm modal full-width */
+      #js-confirm-modal > div { padding: 1.5rem 1.25rem }
+
+      /* Mobile nav search hidden on tiny screens */
+      .nav-search { display: none }
     }
   </style>
 </head>

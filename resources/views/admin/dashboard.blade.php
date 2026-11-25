@@ -36,13 +36,13 @@
       <tbody>
         @foreach($recentLogs as $log)
           <tr>
-            <td style="white-space: nowrap; font-size: .8rem; color: #888;">
+            <td data-label="Waktu" style="white-space: nowrap; font-size: .8rem; color: #888;">
               {{ $log->created_at->timezone('Asia/Jakarta')->format('d M H:i') }}
             </td>
-            <td><strong>{{ $log->admin_name }}</strong></td>
-            <td><span class="status-pill status-pill--muted">{{ $log->action }}</span></td>
-            <td style="color: #ddd;">{{ $log->description }}</td>
-            <td style="font-family: monospace; font-size: .8rem; color: #aaa;">{{ $log->ip_address }}</td>
+            <td data-label="Admin"><strong>{{ $log->admin_name }}</strong></td>
+            <td data-label="Aksi"><span class="status-pill status-pill--muted">{{ $log->action }}</span></td>
+            <td data-label="Keterangan" style="color: #ddd;">{{ $log->description }}</td>
+            <td data-label="IP" style="font-family: monospace; font-size: .8rem; color: #aaa;">{{ $log->ip_address }}</td>
           </tr>
         @endforeach
       </tbody>
