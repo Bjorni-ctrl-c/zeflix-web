@@ -1489,7 +1489,7 @@
       display: flex;
       justify-content: center;
     }
-    .pagination-wrap nav { display: flex; gap: .4rem }
+    .pagination-wrap nav { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: center }
     .pagination-wrap a, .pagination-wrap span {
       min-width: 38px;
       min-height: 38px;
@@ -1885,7 +1885,14 @@
       .auth-card { padding: 1.75rem 1.5rem }
       .form-grid { grid-template-columns: 1fr }
       .page-intro--split { align-items: flex-start; flex-direction: column; gap: 1rem }
-      .catalog-search-form { width: 100% }
+      .catalog-search-form { min-width: 0; width: 100% }
+      .form-inline { min-width: 0; width: 100% }
+
+      /* ---- Film Detail Page ---- */
+      .film-hero { min-height: 56vh; padding: calc(var(--nav-height) + 2rem) 1.25rem 2.5rem }
+      .film-hero h1 { font-size: clamp(2.1rem, 9vw, 3rem) }
+      .film-hero__synopsis { font-size: .92rem; line-height: 1.65; margin-bottom: 1.4rem }
+      .film-details-container { width: 100%; padding: 1.5rem 1rem 3rem }
 
       /* ---- Watch / Player Page ---- */
       .watch-page { padding-top: calc(var(--nav-height) + .5rem); padding-left: .75rem; padding-right: .75rem }
@@ -1939,7 +1946,7 @@
       .surface-card, .form-panel { padding: 1.25rem }
 
       /* ---- Wrap content ---- */
-      .wrap { padding-left: 1rem; padding-right: 1rem }
+      .wrap { width: 100%; padding-left: 1rem; padding-right: 1rem }
 
       /* ---- Footer ---- */
       footer {
@@ -1964,6 +1971,12 @@
       .watch-page { padding-left: 0; padding-right: 0 }
       .player { border-radius: 0; border-left: 0; border-right: 0 }
       .watch-top-bar, .watch-footer-info { padding-left: 1rem; padding-right: 1rem }
+
+      /* Film detail & catalog */
+      .film-hero__actions { flex-direction: column; align-items: stretch }
+      .film-hero__actions .btn { width: 100%; justify-content: center }
+      .film-specs-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.25rem 0 }
+      .catalog-meta-bar { flex-wrap: wrap }
 
       /* Auth */
       .auth-card { padding: 1.5rem 1.25rem }
