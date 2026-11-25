@@ -20,6 +20,8 @@
     }
   ],
   "env": {
+    "APP_NAME": "Zeflix",
+    "APP_URL": "https://zeflix-web.vercel.app",
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "LOG_CHANNEL": "stderr",
