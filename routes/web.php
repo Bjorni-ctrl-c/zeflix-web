@@ -45,7 +45,10 @@ Route::middleware('auth')->group(function () {
 Route::post('/midtrans/webhook', [CheckoutController::class, 'webhook']);
 
 Route::get('/up/migrate', function (Request $request) {
-    $secret = env('DEPLOY_SECRET');
+    $secret = env('DEPLOY_SECRET') 
+        ?? getenv('DEPLOY_SECRET') 
+        ?? ($_SERVER['DEPLOY_SECRET'] ?? ($_ENV['DEPLOY_SECRET'] ?? null));
+
     if (! $secret || $request->query('secret') !== $secret) {
         abort(403, 'Akses ditolak. Token DEPLOY_SECRET salah atau belum diatur.');
     }
