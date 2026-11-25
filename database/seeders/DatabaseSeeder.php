@@ -26,6 +26,6 @@ class DatabaseSeeder extends Seeder
             Genre::firstOrCreate(['name' => $name]);
         }
 
-        $this->call(DemoFilmsSeeder::class);
+        // Film ditambah manual lewat panel admin
     }
 }
