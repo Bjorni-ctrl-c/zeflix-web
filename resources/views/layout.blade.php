@@ -2034,6 +2034,24 @@
     </nav>
   </footer>
 
+  {{-- ================================================================
+       GLOBAL CONFIRM MODAL
+       ================================================================ --}}
+  <div id="js-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="js-confirm-title"
+       style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+    <div style="background:#1a1a1a;border:1px solid rgba(229,9,20,0.4);border-radius:12px;padding:2rem;width:92%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.9);">
+      <div style="width:48px;height:48px;border-radius:50%;background:rgba(229,9,20,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;border:1px solid rgba(229,9,20,0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e50914" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h2 id="js-confirm-title" style="text-align:center;font-size:1.2rem;margin-bottom:.6rem;color:#fff;"></h2>
+      <p id="js-confirm-msg" style="text-align:center;font-size:.88rem;color:#aaa;margin-bottom:1.5rem;line-height:1.6;"></p>
+      <div style="display:flex;gap:.75rem;">
+        <button id="js-confirm-cancel" class="btn btn--outline" style="flex:1;">Batal</button>
+        <button id="js-confirm-ok" class="btn btn--primary" style="flex:1.4;"></button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Header scroll background effect
     const bar = document.getElementById('bar');
@@ -2292,23 +2310,5 @@
       });
     });
   </script>
-  {{-- ================================================================
-       GLOBAL CONFIRM MODAL
-       ================================================================ --}}
-  <div id="js-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="js-confirm-title"
-       style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
-    <div style="background:#1a1a1a;border:1px solid rgba(229,9,20,0.4);border-radius:12px;padding:2rem;width:92%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.9);">
-      <div style="width:48px;height:48px;border-radius:50%;background:rgba(229,9,20,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;border:1px solid rgba(229,9,20,0.35);">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e50914" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <h2 id="js-confirm-title" style="text-align:center;font-size:1.2rem;margin-bottom:.6rem;color:#fff;"></h2>
-      <p id="js-confirm-msg" style="text-align:center;font-size:.88rem;color:#aaa;margin-bottom:1.5rem;line-height:1.6;"></p>
-      <div style="display:flex;gap:.75rem;">
-        <button id="js-confirm-cancel" class="btn btn--outline" style="flex:1;">Batal</button>
-        <button id="js-confirm-ok" class="btn btn--primary" style="flex:1.4;"></button>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
