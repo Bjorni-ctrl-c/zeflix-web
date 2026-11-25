@@ -1843,22 +1843,126 @@
        RESPONSIVE BREAKPOINTS
        ========================================================================== */
     @media (max-width: 820px) {
+      /* ---- Navbar ---- */
       .bar-nav { display: none }
       .mobile-subnav { display: flex }
       body { padding-bottom: calc(64px + env(safe-area-inset-bottom)) }
+      .bar { padding: 0 1rem }
+      .nav-search__input { width: 110px; font-size: .82rem }
+
+      /* ---- Hero Billboard (film utama) ---- */
+      .netflix-billboard {
+        min-height: 60vh;
+        padding: calc(var(--nav-height) + 1.5rem) 1.25rem 3rem;
+        align-items: flex-end;
+      }
+      .netflix-billboard__title {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+        margin-bottom: .6rem;
+      }
+      .netflix-billboard__synopsis {
+        font-size: .9rem;
+        -webkit-line-clamp: 2;
+        margin-bottom: 1.2rem;
+      }
+      .netflix-billboard__actions {
+        gap: .5rem;
+      }
+      .netflix-billboard__actions .btn {
+        font-size: .85rem;
+        padding: .55rem 1rem;
+        min-height: 40px;
+      }
+
+      /* ---- Landing Hero (tamu / belum subscribe) ---- */
+      .hero--landing {
+        min-height: auto;
+        padding: calc(var(--nav-height) + 2rem) 1.25rem 2.5rem;
+      }
+      .hero__inner { flex-direction: column; text-align: left; gap: 1.5rem }
+      .hero__poster--landing { display: none }
+      .hero__copy h1 { font-size: clamp(2.4rem, 9vw, 3.5rem) }
+      .hero__description { font-size: .92rem }
+      .hero__actions { flex-wrap: wrap; gap: .6rem }
+      .hero__actions .btn { flex: 1; min-width: 140px }
+
+      /* ---- Film Row Cards ---- */
+      .row .film-card { flex-basis: 140px }
+      .top10-card { flex-basis: 130px !important }
+      .top10-rank { font-size: 5rem; margin-right: -14px }
+      .slider-btn { display: none }
+
+      /* ---- Layout Grids ---- */
       .landing-steps, .landing-features { grid-template-columns: 1fr }
       .subscription-panel { grid-template-columns: 1fr }
       .account-grid { grid-template-columns: 1fr }
       .auth-layout { grid-template-columns: 1fr }
+      .auth-aside { display: none }
       .form-grid { grid-template-columns: 1fr }
       .page-intro--split { align-items: flex-start; flex-direction: column; gap: 1rem }
       .catalog-search-form { width: 100% }
-      .hero__inner { flex-direction: column; text-align: left }
-      .hero__poster--landing { display: none }
-      .row .film-card { flex-basis: 155px }
-      .top10-card { flex-basis: 140px !important }
-      .top10-rank { font-size: 5.5rem; margin-right: -16px }
-      .slider-btn { display: none }
+
+      /* ---- Auth Card full width ---- */
+      .auth-layout { border-radius: var(--radius-md); margin: 1rem auto }
+      .auth-card { padding: 1.75rem 1.5rem }
+
+      /* ---- Account & Checkout ---- */
+      .account-profile { flex-direction: row; align-items: center }
+      .account-grid > * { width: 100% }
+
+      /* ---- Admin ---- */
+      .stats-grid { grid-template-columns: repeat(2, 1fr) }
+      .table-action { text-align: left }
+      .data-table thead { display: none }
+      .data-table tr {
+        display: block;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: .75rem;
+        padding: .6rem .8rem;
+        background: var(--color-surface);
+      }
+      .data-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .4rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-size: .84rem;
+      }
+      .data-table td:last-child { border-bottom: 0 }
+      .data-table td[data-label]::before {
+        content: attr(data-label);
+        color: #888;
+        font-size: .74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        flex-shrink: 0;
+        margin-right: .75rem;
+      }
+      .table-action form { display: inline-flex; margin-left: 0; margin-right: .35rem }
+
+      /* ---- Footer ---- */
+      footer { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom)) }
+
+      /* ---- Wrap padding ---- */
+      .wrap { padding-left: 1rem; padding-right: 1rem }
+    }
+
+    @media (max-width: 480px) {
+      /* Extra-small phones */
+      .netflix-billboard { min-height: 55vh; padding: calc(var(--nav-height) + 1rem) 1rem 2.5rem }
+      .netflix-billboard__title { font-size: clamp(1.9rem, 9vw, 2.6rem) }
+      .netflix-billboard__actions { flex-direction: column; align-items: flex-start }
+      .netflix-billboard__actions .btn { width: 100% }
+      .hero__actions .btn { width: 100% }
+      .btn--wide { width: 100% }
+      .surface-card { padding: 1.25rem }
+      .account-avatar { width: 44px; height: 44px; font-size: 1.1rem }
+      .stats-grid { grid-template-columns: 1fr }
+      .form-actions { flex-direction: column-reverse }
+      .form-actions .btn { width: 100% }
     }
   </style>
 </head>
