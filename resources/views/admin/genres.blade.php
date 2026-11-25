@@ -23,7 +23,7 @@
     <tr>
       <td data-label="Nama"><form class="form-inline" method="post" action="{{ route('admin.genres.update', $genre) }}">@csrf @method('PUT')<input name="name" value="{{ $genre->name }}" maxlength="80" required><button class="btn btn--small btn--outline">Simpan</button></form></td>
       <td data-label="Jumlah film">{{ $genre->films_count }}</td>
-      <td class="table-action"><form method="post" action="{{ route('admin.genres.destroy', $genre) }}" onsubmit="return confirm('Hapus genre ini?')">@csrf @method('DELETE')<button class="btn btn--small btn--outline">Hapus</button></form></td>
+      <td class="table-action"><form method="post" action="{{ route('admin.genres.destroy', $genre) }}" data-confirm="Genre '{{ $genre->name }}' akan dihapus. Film yang menggunakan genre ini tidak akan ikut terhapus." data-confirm-title="Hapus Genre Ini?">@csrf @method('DELETE')<button class="btn btn--small btn--outline">Hapus</button></form></td>
     </tr>
     @empty
     <tr><td colspan="3" class="table-empty">Belum ada genre.</td></tr>

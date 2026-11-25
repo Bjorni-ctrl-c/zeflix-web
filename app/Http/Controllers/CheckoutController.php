@@ -21,30 +21,51 @@ class CheckoutController extends Controller
     public function start(Request $r, Midtrans $mt)
     {
         if ($r->user()->isAdmin() || $r->user()->hasActiveSubscription()) {
+            if ($r->wantsJson() || $r->ajax()) {
+                return response()->json(['message' => 'Akun sudah memiliki akses aktif.'], 403);
+            }
             return redirect()->route('catalog');
         }
         if (! config('svod.midtrans.server_key')) {
-            return back()->with('err', 'Pembayaran belum dikonfigurasi. Isi MIDTRANS_SERVER_KEY untuk mengaktifkan Midtrans Sandbox.');
+            if ($r->wantsJson() || $r->ajax()) {
+                return response()->json(['message' => 'Pembayaran belum dikonfigurasi oleh admin. Hubungi support.'], 503);
+            }
+            return back()->with('err', 'Pembayaran belum dikonfigurasi. Hubungi administrator.');
         }
-        $t = Transaction::create([
-            'user_id' => $r->user()->id,
-            'order_id' => 'SVOD-'.strtoupper(Str::random(12)),
-            'amount' => config('svod.price'),
-        ]);
-        $snap = $mt->createSnap($t, $r->user());
-        abort_unless(isset($snap['redirect_url'], $snap['token']), 502, 'Midtrans tidak mengembalikan tautan pembayaran.');
-        $t->update(['snap_token' => $snap['token'] ?? null, 'redirect_url' => $snap['redirect_url'] ?? null]);
 
-        if ($r->wantsJson() || $r->ajax()) {
-            return response()->json([
-                'status' => 'ok',
-                'token' => $snap['token'],
-                'redirect_url' => $snap['redirect_url'],
-                'order_id' => $t->order_id,
+        try {
+            $t = Transaction::create([
+                'user_id'  => $r->user()->id,
+                'order_id' => 'SVOD-'.strtoupper(Str::random(12)),
+                'amount'   => config('svod.price'),
             ]);
-        }
+            $snap = $mt->createSnap($t, $r->user());
 
-        return redirect()->away($snap['redirect_url']);
+            if (! isset($snap['token'], $snap['redirect_url'])) {
+                $t->update(['status' => 'failed']);
+                throw new \RuntimeException('Midtrans tidak mengembalikan token pembayaran.');
+            }
+
+            $t->update(['snap_token' => $snap['token'], 'redirect_url' => $snap['redirect_url']]);
+
+            if ($r->wantsJson() || $r->ajax()) {
+                return response()->json([
+                    'status'       => 'ok',
+                    'token'        => $snap['token'],
+                    'redirect_url' => $snap['redirect_url'],
+                    'order_id'     => $t->order_id,
+                ]);
+            }
+
+            return redirect()->away($snap['redirect_url']);
+
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Checkout start error: '.$e->getMessage());
+            if ($r->wantsJson() || $r->ajax()) {
+                return response()->json(['message' => 'Gagal memulai sesi pembayaran. Silakan coba beberapa saat lagi.'], 502);
+            }
+            return back()->with('err', 'Gagal memulai sesi pembayaran: '.$e->getMessage());
+        }
     }
 
     /** Halaman kembali dari gateway: status dikonfirmasi ke API Midtrans, bukan dari parameter URL. */

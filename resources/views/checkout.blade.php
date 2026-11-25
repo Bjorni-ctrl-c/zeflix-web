@@ -116,6 +116,7 @@
       </div>
     </div>
 
+    <div id="checkout-error-msg" style="display:none;background:rgba(229,9,20,0.15);border:1px solid rgba(229,9,20,0.4);border-radius:6px;padding:.75rem 1rem;font-size:.85rem;color:#ff9e9e;margin-bottom:1rem;text-align:center;"></div>
     <div style="display: flex; gap: .75rem; justify-content: flex-end;">
       <button type="button" class="btn btn--outline" id="btn-cancel-verify" style="flex: 1;">
         Batal
@@ -194,12 +195,12 @@
             }
           });
 
+          const data = await res.json().catch(() => ({}));
+
           if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.message || 'Gagal menyiapkan sesi pembayaran.');
+            throw new Error(data.message || 'Gagal menyiapkan sesi pembayaran. Coba lagi.');
           }
 
-          const data = await res.json();
           closeModal();
           resetBtn();
 
@@ -215,7 +216,7 @@
                 window.location.href = "{{ route('checkout.finish') }}?order_id=" + encodeURIComponent(oid);
               },
               onError: function() {
-                alert('Pembayaran gagal atau ditolak. Silakan coba kembali.');
+                showCheckoutError('Pembayaran gagal atau ditolak. Silakan coba kembali.');
                 resetBtn();
               },
               onClose: function() {
@@ -228,9 +229,14 @@
             window.location.href = data.redirect_url;
           }
         } catch (err) {
-          alert(err.message || 'Terjadi kesalahan jaringan.');
+          showCheckoutError(err.message || 'Terjadi kesalahan jaringan. Periksa koneksi Anda.');
           resetBtn();
         }
+
+    function showCheckoutError(msg) {
+      const el = document.getElementById('checkout-error-msg');
+      if (el) { el.textContent = msg; el.style.display = 'block'; setTimeout(() => { el.style.display='none'; }, 7000); }
+    }
       });
     }
   })();

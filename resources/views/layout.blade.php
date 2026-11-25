@@ -1917,10 +1917,8 @@
             <a href="{{ route('admin.dashboard') }}" style="color: #ff9e9e;">Panel Admin</a>
             @endif
             <hr>
-            <form method="post" action="{{ route('logout') }}" style="margin: 0;">
-              @csrf
-              <button type="submit">Keluar dari Zeflix</button>
-            </form>
+            <button type="button" id="js-logout-btn" style="background:none;border:none;padding:0;cursor:pointer;width:100%;text-align:left;color:inherit;font:inherit;">Keluar dari Zeflix</button>
+            <form id="js-logout-form" method="post" action="{{ route('logout') }}" style="display:none;">@csrf</form>
           </div>
         </div>
       @else
@@ -2222,6 +2220,95 @@
       btn.textContent = isPassword ? '\u25cf' : '\u25cb';
       btn.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
     });
+
+    // =====================================================================
+    // GLOBAL CONFIRM MODAL (logout + hapus film/genre)
+    // =====================================================================
+    const confirmModal     = document.getElementById('js-confirm-modal');
+    const confirmTitle     = document.getElementById('js-confirm-title');
+    const confirmMsg       = document.getElementById('js-confirm-msg');
+    const confirmOkBtn     = document.getElementById('js-confirm-ok');
+    const confirmCancelBtn = document.getElementById('js-confirm-cancel');
+    let   _pendingAction   = null;
+
+    function openConfirm({ title, msg, okLabel = 'Ya, Lanjutkan', danger = true, onOk }) {
+      if (!confirmModal) { onOk(); return; }
+      confirmTitle.textContent  = title;
+      confirmMsg.textContent    = msg;
+      confirmOkBtn.textContent  = okLabel;
+      confirmOkBtn.className    = 'btn ' + (danger ? 'btn--primary' : 'btn--outline');
+      _pendingAction            = onOk;
+      confirmModal.style.display = 'flex';
+      confirmModal.setAttribute('aria-hidden', 'false');
+      confirmCancelBtn.focus();
+    }
+
+    function closeConfirm() {
+      if (!confirmModal) return;
+      confirmModal.style.display = 'none';
+      confirmModal.setAttribute('aria-hidden', 'true');
+      _pendingAction = null;
+    }
+
+    if (confirmCancelBtn) confirmCancelBtn.addEventListener('click', closeConfirm);
+    if (confirmModal)     confirmModal.addEventListener('click', e => { if (e.target === confirmModal) closeConfirm(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeConfirm(); });
+
+    if (confirmOkBtn) {
+      confirmOkBtn.addEventListener('click', () => {
+        if (typeof _pendingAction === 'function') _pendingAction();
+        closeConfirm();
+      });
+    }
+
+    // --- Logout button ---
+    const logoutBtn  = document.getElementById('js-logout-btn');
+    const logoutForm = document.getElementById('js-logout-form');
+    if (logoutBtn && logoutForm) {
+      logoutBtn.addEventListener('click', () => {
+        openConfirm({
+          title:   'Keluar dari Zeflix?',
+          msg:     'Sesi login Anda akan diakhiri. Anda harus masuk kembali untuk melanjutkan menonton.',
+          okLabel: 'Ya, Keluar',
+          danger:  true,
+          onOk:    () => logoutForm.submit(),
+        });
+      });
+    }
+
+    // --- Confirm-delete forms (film & genre) ---
+    document.addEventListener('submit', function(e) {
+      const form = e.target.closest('form[data-confirm]');
+      if (!form) return;
+      e.preventDefault();
+      const title = form.dataset.confirmTitle || 'Hapus data ini?';
+      const msg   = form.dataset.confirm;
+      openConfirm({
+        title:   title,
+        msg:     msg,
+        okLabel: 'Ya, Hapus',
+        danger:  true,
+        onOk:    () => form.submit(),
+      });
+    });
   </script>
+  {{-- ================================================================
+       GLOBAL CONFIRM MODAL
+       ================================================================ --}}
+  <div id="js-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="js-confirm-title"
+       style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+    <div style="background:#1a1a1a;border:1px solid rgba(229,9,20,0.4);border-radius:12px;padding:2rem;width:92%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.9);">
+      <div style="width:48px;height:48px;border-radius:50%;background:rgba(229,9,20,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;border:1px solid rgba(229,9,20,0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e50914" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h2 id="js-confirm-title" style="text-align:center;font-size:1.2rem;margin-bottom:.6rem;color:#fff;"></h2>
+      <p id="js-confirm-msg" style="text-align:center;font-size:.88rem;color:#aaa;margin-bottom:1.5rem;line-height:1.6;"></p>
+      <div style="display:flex;gap:.75rem;">
+        <button id="js-confirm-cancel" class="btn btn--outline" style="flex:1;">Batal</button>
+        <button id="js-confirm-ok" class="btn btn--primary" style="flex:1.4;"></button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
